@@ -1,0 +1,12 @@
+tags:
+  post:
+    summary: Create a tag
+    description: Create a tag
+    tags:
+      - Tags
+    operationId: create-tag
+    requestBody:
+      $ref: 'tag-models.yaml#/requests/CreateTagRequest'
+    responses:
+      '201':
+        $ref: 'tag-models.yaml#/responses/GetTagResponse'

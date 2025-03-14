@@ -1,0 +1,59 @@
+models:
+  CreateTagRequest:
+    type: object
+    description: object describing a tag to be created
+    required:
+      - tag
+    properties:
+      tag:
+        type: string
+        description: The tag name
+        minLength: 1
+        maxLength: 255
+        pattern: '^[a-zA-Z0-9_-]+$'
+        message: 'name must be between 1 and 255 characters'
+        x-pattern-message: 'name must be alpha numeric with dashes or underscores'
+        example: tag-1
+      locked:
+        type: boolean
+        description: Whether the tag is locked
+        example: false
+  GetTagResponse:
+    type: object
+    description: object describing a tag that exists
+    properties:
+      tag:
+        type: string
+        description: The tag value
+        example: tag-1
+      id:
+        type: string
+        description: The id of the tag
+        example: 123
+      displayName:
+        type: string
+        description: The display name of the tag which will be either tag or Store Name or External Id of store.
+        example: Tag 1
+      isStoreTag:
+        type: boolean
+        description: Whether the tag is store tag or not
+        example: false
+      locked:
+        type: boolean
+        description: Whether the tag is locked
+        example: false
+responses:
+  GetTagResponse:
+    description: Single tag
+    content:
+      application/json:
+        schema:
+          $ref: 'tag-models.yaml#/models/GetTagResponse'
+
+requests:
+  CreateTagRequest:
+    description: Creating a tag
+    content:
+      application/json:
+        schema:
+          $ref: 'tag-models.yaml#/models/CreateTagRequest'

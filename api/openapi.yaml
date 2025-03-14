@@ -1,0 +1,70 @@
+openapi: 3.1.0
+info:
+  title: Sample API
+  version: 1.0.0
+paths:
+  '/api/v1/tags':
+    $ref: './tags-api.yaml#/tags'
+  /hello:
+    get:
+      summary: Returns a greeting
+      operationId: Greeting
+      tags:
+        - Greetings
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Greeting'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-rust-enum-names:
+        200: Success # Rename the 200 variant
+  /goodbye:
+    get:
+      summary: Returns a goodbye message
+      operationId: Farewell
+      tags:
+        - Farewells
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Farewell'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    Greeting:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+    Farewell:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string

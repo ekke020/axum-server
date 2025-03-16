@@ -1,0 +1,103 @@
+components:
+  schemas:
+    CustomFunctionPresetList:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Custom function preset list id
+          example: 01604546-8f96-471b-bf52-29086359d5dc
+        tenantId:
+          type: string
+          format: uuid
+        presets:
+          type: array
+          x-field-extra-annotation: "@lombok.Builder.Default"
+          items:
+            $ref: '#/components/schemas/CustomFunctionPresetListItem'
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp when the resource was created
+        createdBy:
+          type: string
+          description: The auth0 user id of the user who created the resource
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp when the resource was latest updated
+        updatedBy:
+          type: string
+          description: The auth0 user id of the user who updated the resource
+      required:
+      - id
+      - list
+      - createdAt
+      - createdBy
+      - updatedAt
+      - updatedBy
+    CustomFunctionPresetListItem:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/ListCustomFunctionPresetBase'
+        - type: object
+          properties:
+            baseFunctionType:
+              $ref: 'custom-function-presets-models.yaml#/components/schemas/BaseFunctionType'
+            customFunctionPreset:
+              $ref: './custom-function-presets-models.yaml#/components/schemas/CustomFunctionPresetBaseWithId'
+    ListCustomFunctionPresetBase:
+      required:
+        - order
+        - visible
+      type: object
+      properties:
+        order:
+          type: integer
+          format: int32
+          minimum: 1
+          description: Order of the preset in the list
+          example: 1
+        visible:
+          type: boolean
+          description: Visibility of the preset
+          example: true
+    BaseFunctionPreset:
+      type: object
+      properties:
+        baseFunctionType:
+          $ref: './custom-function-presets-models.yaml#/components/schemas/BaseFunctionType'
+    functionPreset:
+      type: object
+      oneOf:
+        - $ref: '#/components/schemas/BaseFunctionPreset'
+        - type: object
+          properties:
+            customFunctionPreset:
+              type: object
+              properties:
+                id:
+                  type: string
+                  format: uuid
+                  description: Custom function preset id
+                  example: 80cdb902-6ea8-4606-abbc-4a421e564a3c
+    UpdateOrderAndVisibilityListItem:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/ListCustomFunctionPresetBase'
+        - $ref: '#/components/schemas/functionPreset'
+    UpdateOrderAndVisibilityList:
+        type: array
+        x-field-extra-annotation: "@lombok.Builder.Default"
+        items:
+          $ref: '#/components/schemas/UpdateOrderAndVisibilityListItem'
+  requestBodies:
+    UpdateOrderAndVisibilityRequest:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              presets:
+                $ref: '#/components/schemas/UpdateOrderAndVisibilityList'

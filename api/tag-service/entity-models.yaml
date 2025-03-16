@@ -1,0 +1,96 @@
+components:
+  schemas:
+    Type:
+      type: string
+      enum:
+        - STORE
+        - DESIGN
+      allowableValues:
+        - STORE
+        - DESIGN
+      description: The type of the entity
+      example: Store
+models:
+  Entity:
+    type: object
+    description: An Entity
+    required:
+      - id
+      - type
+    properties:
+      id:
+        type: string
+        description: The id of the entity
+        pattern: '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
+        x-pattern-message: 'Entity Id must be a valid UUID'
+      type:
+        $ref: 'entity-models.yaml#/components/schemas/Type'
+      name:
+        type: string
+        description: If the entity is a store, this is the name of the store
+        example: Store Name
+  GetEntityResponse:
+    type: object
+    description: An Entity
+    properties:
+      id:
+        type: string
+        description: The id of the entity
+        example: 123
+      type:
+        $ref: 'entity-models.yaml#/components/schemas/Type'
+      tags:
+        type: array
+        description: The tags associated with the entity
+        items:
+          type: string
+          example: [ tag-1, tag-2 ]
+  PatchEntityRequest:
+    type: object
+    description: object describing an entity to be updated
+    properties:
+      type:
+        $ref: 'entity-models.yaml#/components/schemas/Type'
+      tags:
+        type: array
+        description: The tags associated with the entity
+        items:
+          type: string
+          example: [ tag-1, tag-2 ]
+
+responses:
+  GetFilteredEntitiesResponse:
+    description: List of all entities filtered by tags
+    content:
+      application/json:
+        schema:
+          type: array
+          items:
+            $ref: 'entity-models.yaml#/models/Entity'
+  GetEntityResponse:
+    description: An entity
+    content:
+      application/json:
+        schema:
+          $ref: 'entity-models.yaml#/models/GetEntityResponse'
+  GetEntitiesResponse:
+    description: List of all entities
+    content:
+      application/json:
+        schema:
+          type: array
+          items:
+            $ref: 'entity-models.yaml#/models/GetEntityResponse'
+requests:
+  PatchEntityRequest:
+    description: object describing an entity to be updated
+    content:
+      application/json:
+        schema:
+          $ref: 'entity-models.yaml#/models/Entity'
+  CreateEntityRequest:
+    description: object describing an entity to be created
+    content:
+      application/json:
+        schema:
+          $ref: 'entity-models.yaml#/models/Entity'

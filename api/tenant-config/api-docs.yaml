@@ -1,0 +1,67 @@
+openapi: 3.0.1
+info:
+  title: Tenant Configurator API's
+  version: '1.0'
+  description: >-
+  contact:
+    name: Evo Core Team
+    email: evocoreteam@pricer.com
+    url: 'https://pricer.com'
+  termsOfService: 'https://pricer.com'
+tags:
+  - name: Custom Function Preset
+    description: |
+      <p>
+        A Custom Function Preset has a name type and a set of properties, specific to the type.
+      </p>
+      <p>
+        Each type has it's own <code>POST</code> and <code>PUT</code> endpoint as they have different payloads.
+      </p>
+  - name: Custom Function Preset List
+    description: |
+      <p>
+        A Custom Function Preset List represents an ordered list of Custom Function Preset's with a visibility property for each.
+      </p>
+      <p>
+        Custom Function Preset List's are tenant-scoped and either 0 or 1 lists exists per tenant.
+      </p>
+      <p>
+        There are no endpoints for adding a preset to / removing a preset from a list as this is done automatically when a preset is created / deleted.
+        This refers to the following endpoints:
+        <ul>
+          <li><code>POST /api/v1/custom-function-presets/scan-and-flash</code></li>
+          <li><code>POST /api/v1/custom-function-presets/bulk-link</code></li>
+          <li><code>POST /api/v1/custom-function-presets/bulk-unlink</code></li>
+          <li><code>DELETE /api/v1/custom-function-presets/{id}</code></li>
+        </ul>
+      
+      </p>
+paths:
+  '/api/v1/custom-function-presets':
+    $ref: './custom-function-presets-api.yaml#/custom-function-presets'
+  '/api/v1/custom-function-presets/{id}':
+    $ref: './custom-function-presets-api.yaml#/custom-function-preset-by-id'
+  '/api/v1/custom-function-presets/scan-and-flash':
+    $ref: './custom-function-presets-api.yaml#/custom-function-presets-of-type-scan-and-flash'
+  '/api/v1/custom-function-presets/scan-and-flash/{id}':
+    $ref: './custom-function-presets-api.yaml#/update-custom-function-presets-of-type-scan-and-flash'
+  '/api/v1/custom-function-presets/bulk-link':
+    $ref: './custom-function-presets-api.yaml#/custom-function-presets-of-type-bulk-link'
+  '/api/v1/custom-function-presets/bulk-link/{id}':
+    $ref: './custom-function-presets-api.yaml#/update-custom-function-presets-of-type-bulk-link'
+  '/api/v1/custom-function-presets/bulk-unlink':
+    $ref: './custom-function-presets-api.yaml#/custom-function-presets-of-type-bulk-unlink'
+  '/api/v1/custom-function-presets/bulk-unlink/{id}':
+    $ref: './custom-function-presets-api.yaml#/update-custom-function-presets-of-type-bulk-unlink'
+  '/api/v1/custom-function-preset-lists':
+    $ref: './custom-function-preset-lists-api.yaml#/custom-function-preset-lists'
+  '/api/v1/custom-function-preset-lists/{id}/update-order-and-visibility':
+    $ref: './custom-function-preset-lists-api.yaml#/update-order-and-visibility'
+components:
+  securitySchemes:
+    bearerAuth: # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT # optional, arbitrary value for documentation purposes
+security:
+  -  bearerAuth: [ ]

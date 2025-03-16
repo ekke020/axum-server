@@ -1,0 +1,195 @@
+tags:
+  parameters:
+    - $ref: 'common.yaml#/headerParameters/pricerTransactionId'
+    - $ref: 'common.yaml#/headerParameters/pricerClientId'
+  post:
+    summary: Create a tag
+    description: Create a tag
+    tags:
+      - Tags
+    operationId: create-tag
+    requestBody:
+      $ref: 'tag-models.yaml#/requests/CreateTagRequest'
+    responses:
+      '201':
+        $ref: 'tag-models.yaml#/responses/GetTagResponse'
+      '400':
+        $ref: 'common.yaml#/responses/InvalidPayloadResponse'
+      '403':
+        $ref: 'common.yaml#/responses/AuthorizationErrorResponse'
+      '409':
+        $ref: 'common.yaml#/responses/ConflictErrorResponse'
+      '500':
+        $ref: 'common.yaml#/responses/InternalErrorResponse'
+  get:
+    parameters:
+      - in: query
+        name: search
+        description: Filter on search
+        schema:
+          type: string
+          default: ""
+      - in: query
+        name: isStoreTag
+        description: Filter on store tags
+        required: false
+        schema:
+          type: boolean
+      - in: query
+        name: includeEntities
+        description: Whether to include entities in the response
+        required: false
+        schema:
+          type: boolean
+          default: true
+      - in: query
+        name: includeDisplayName
+        description: Whether to include display name in the response
+        required: false
+        schema:
+          type: boolean
+          default: false
+      - in: query
+        name: tags
+        description: Filter on one or more tag names. If specified, the result will be details of only specified tags.
+        required: false
+        schema:
+          type: array
+          default: []
+          items:
+            type: string
+        style: form
+        explode: false
+        examples:
+          oneTag:
+            summary: Example of a single tag
+            value: [ sweden ]
+          multipleTags:
+            summary: Example of multiple tags
+            value: [ sweden, denmark, norway ]
+      - in: query
+        name: entityTypes
+        description: Filter on one or more entity types. If specified, the result will be details of only specified entity types.
+        required: false
+        schema:
+          type: array
+          default: []
+          items:
+            $ref: 'entity-models.yaml#/components/schemas/Type'
+      - $ref: 'common.yaml#/parameters/size'
+      - $ref: 'common.yaml#/parameters/page'
+    summary: Get all tags
+    description: Get a list of tags
+    tags:
+      - Tags
+    operationId: get-tags
+    responses:
+      '200':
+        $ref: 'tag-models.yaml#/responses/GetTagsResponse'
+      '400':
+        $ref: 'common.yaml#/responses/InvalidPayloadResponse'
+      '403':
+        $ref: 'common.yaml#/responses/AuthorizationErrorResponse'
+      '500':
+        $ref: 'common.yaml#/responses/InternalErrorResponse'
+tags-id:
+  parameters:
+    - schema:
+        type: string
+      name: id
+      in: path
+      required: true
+      description: Unique Id or Name of the tag
+  get:
+    summary: Get tag by Id or Name
+    description: Pass an Id or Name to get a specific tag
+    tags:
+      - Tags
+    operationId: get-tag
+    parameters:
+      - in: query
+        name: includeDisplayName
+        description: Whether to include display name in the response
+        required: false
+        schema:
+          type: boolean
+          default: false
+    responses:
+      '200':
+        $ref: 'tag-models.yaml#/responses/GetTagResponse'
+      '400':
+        $ref: 'common.yaml#/responses/InvalidPayloadResponse'
+      '403':
+        $ref: 'common.yaml#/responses/AuthorizationErrorResponse'
+      '500':
+        $ref: 'common.yaml#/responses/InternalErrorResponse'
+  patch:
+    summary: Patch tag by Id or Name
+    description: Pass an Id or Name of a valid tag and a JSON patch to update the tag accordingly
+    tags:
+      - Tags
+    operationId: patch-tag
+    requestBody:
+      $ref: 'tag-models.yaml#/requests/PatchTagRequest'
+    responses:
+      '200':
+        $ref: 'tag-models.yaml#/responses/GetTagResponse'
+      '400':
+        $ref: 'common.yaml#/responses/InvalidPayloadResponse'
+      '403':
+        $ref: 'common.yaml#/responses/AuthorizationErrorResponse'
+      '500':
+        $ref: 'common.yaml#/responses/InternalErrorResponse'
+  delete:
+    summary: Delete tag by Id or Name
+    description: Pass and Is or Name of a valid tag to delete it if no entities are associated with it
+    tags:
+      - Tags
+    operationId: delete-tag
+    responses:
+      '200':
+        content:
+          text/plain:
+            schema:
+              type: string
+      '400':
+        $ref: 'common.yaml#/responses/InvalidPayloadResponse'
+      '403':
+        $ref: 'common.yaml#/responses/AuthorizationErrorResponse'
+      '500':
+        $ref: 'common.yaml#/responses/InternalErrorResponse'
+
+entities-id:
+  parameters:
+    - in: path
+      name: tagId
+      description: Unique Id or Name of the tag
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: entityId
+      description: entity id
+      required: true
+      schema:
+        type: string
+    - $ref: 'common.yaml#/headerParameters/pricerTransactionId'
+    - $ref: 'common.yaml#/headerParameters/pricerClientId'
+  delete:
+    summary: Disassociate tag from specified entity
+    description: Removes the connection between the given tag and entity
+    tags:
+      - Tags
+    operationId: remove-tag-from-entity
+    responses:
+      '200':
+        content:
+          text/plain:
+            schema:
+              type: string
+      '400':
+        $ref: 'common.yaml#/responses/InvalidPayloadResponse'
+      '403':
+        $ref: 'common.yaml#/responses/AuthorizationErrorResponse'
+      '500':
+        $ref: 'common.yaml#/responses/InternalErrorResponse'

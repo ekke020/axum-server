@@ -1,0 +1,33 @@
+types:
+  get:
+    summary: Get entity types
+    description: Get all entity types for a tenant
+    tags:
+      - Types
+    operationId: get-types
+    responses:
+      '200':
+        $ref: 'type-models.yaml#/responses/GetTypesResponse'
+      '400':
+        $ref: 'common.yaml#/responses/InvalidPayloadResponse'
+      '403':
+        $ref: 'common.yaml#/responses/AuthorizationErrorResponse'
+      '500':
+        $ref: 'common.yaml#/responses/InternalErrorResponse'
+  post:
+    summary: Create entity type
+    description: Create a new entity type
+    tags:
+      - Types
+    operationId: create-type
+    requestBody:
+      $ref: 'type-models.yaml#/requests/CreateTypeRequest'
+    responses:
+      '200':
+        $ref: 'type-models.yaml#/responses/GetTypeResponse'
+      '400':
+        $ref: 'common.yaml#/responses/InvalidPayloadResponse'
+      '403':
+        $ref: 'common.yaml#/responses/AuthorizationErrorResponse'
+      '500':
+        $ref: 'common.yaml#/responses/InternalErrorResponse'

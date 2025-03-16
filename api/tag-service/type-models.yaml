@@ -1,0 +1,36 @@
+models:
+  Type:
+    type: object
+    description: object describing a type
+    properties:
+      name:
+        type: string
+        description: The name of the type
+        example: bird
+      address:
+        type: string
+        description: The address the type is associated with
+        example: https://api.tenant.pricer-plaza.com/
+
+responses:
+  GetTypesResponse:
+    description: List of all tags
+    content:
+      application/json:
+        schema:
+          type: array
+          items:
+            $ref: 'type-models.yaml#/models/Type'
+  GetTypeResponse:
+    description: Single tag
+    content:
+      application/json:
+        schema:
+          $ref: 'type-models.yaml#/models/Type'
+requests:
+  CreateTypeRequest:
+    description: Creating a tag
+    content:
+      application/json:
+        schema:
+          $ref: 'type-models.yaml#/models/Type'

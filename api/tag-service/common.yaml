@@ -1,0 +1,103 @@
+commonSchemas:
+  AuditInfo:
+    type: object
+    title: AuditInfo
+    description: Audit metadata for an entry
+    properties:
+      createdAt:
+        type: string
+        description: Timestamp when the resource was created
+      updatedAt:
+        type: string
+        description: Timestamp when the resource was latest updated
+      createdBy:
+        type: string
+        description: The auth0 user id of the user created the resource
+headerParameters:
+  pricerTransactionId:
+    name: "X-Pricer-Transaction-Id"
+    in: "header"
+    description: "A transaction id to trace requests across multiple services."
+    required: false
+    examples:
+      Transaction id:
+          value: 1b0254bd-fbfb-4d13-bb4e-76459cb5bb88
+    schema:
+      type: string
+  pricerClientId:
+    name: "X-Pricer-Client-Id"
+    in: "header"
+    description: "A client id to trace requests across multiple services."
+    required: false
+    schema:
+      type: string
+  limitParam:
+    name: limit
+    in: query
+    description: Limits the number of returned results
+    required: false
+    type: integer
+    format: int32
+parameters:
+    page:
+      name: page
+      in: query
+      description: The page number
+      required: false
+      schema:
+        type: integer
+        default: 0
+    size:
+      in: query
+      name: size
+      description: The numbers of items to return
+      schema:
+        type: integer
+        minimum: 1
+        default: 10
+      required: false
+    search:
+      name: search
+      in: query
+      description: The email address of the user
+      required: false
+      schema:
+        type: string
+        default: ""
+
+responses:
+  InternalErrorResponse:
+    description: Internal server error
+    content:
+      text/plain:
+        schema:
+          type: string
+          example: Internal server error
+  NotFoundErrorResponse:
+    description: Tenant not found
+    content:
+      text/plain:
+        schema:
+          type: string
+          example: Tenant not found
+  AuthorizationErrorResponse:
+    description: Authorization failures
+    content:
+      text/plain:
+        schema:
+          type: string
+          example: You do not have enough permissions
+  InvalidPayloadResponse:
+    description: Incorrect given payload
+    content:
+      text/plain:
+        schema:
+          type: string
+          example: tenant_id was not given or invalid json.
+  ConflictErrorResponse:
+    description: Conflict error
+    content:
+      text/plain:
+        schema:
+          type: string
+          example: Resource already exists

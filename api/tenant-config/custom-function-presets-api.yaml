@@ -1,0 +1,241 @@
+custom-function-presets:
+  parameters:
+    - $ref: './common.yaml#/components/parameters/pricerTransactionId'
+    - $ref: './common.yaml#/components/parameters/pricerClientId'
+  get:
+    tags:
+      - Custom Function Preset
+    summary: Retrieve all custom function presets
+    description: Retrieves all custom function presets
+    operationId: listCustomFunctionPresets
+    responses:
+      '200':
+        description: List of custom function presets
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: './custom-function-presets-models.yaml#/components/schemas/CustomFunctionPresetsResponseItem'
+      '400':
+        $ref: './common.yaml#/components/responses/BadRequestResponse'
+      '403':
+        $ref: './common.yaml#/components/responses/AuthorizationErrorResponse'
+      '500':
+        $ref: './common.yaml#/components/responses/InternalErrorResponse'
+custom-function-preset-by-id:
+  parameters:
+    - $ref: './common.yaml#/components/parameters/pricerTransactionId'
+    - $ref: './common.yaml#/components/parameters/pricerClientId'
+  delete:
+    tags:
+      - Custom Function Preset
+    summary: Delete a custom function preset by id
+    description: |
+      <p>Deletes a custom function preset by id.</p>
+      <p><b>Additionally removes the preset from the tenant's preset list.</b></p>
+    operationId: deleteCustomFunctionPresetById
+    parameters:
+      - in: path
+        name: id
+        description: The id of the custom function preset
+        required: true
+        schema:
+          type: string
+          format: uuid
+    responses:
+      '204':
+        description: Custom function preset deleted
+      '400':
+        $ref: './common.yaml#/components/responses/BadRequestResponse'
+      '403':
+        $ref: './common.yaml#/components/responses/AuthorizationErrorResponse'
+      '404':
+        $ref: './common.yaml#/components/responses/NotFoundErrorResponse'
+      '500':
+        $ref: './common.yaml#/components/responses/InternalErrorResponse'
+custom-function-presets-of-type-scan-and-flash:
+  parameters:
+    - $ref: './common.yaml#/components/parameters/pricerTransactionId'
+    - $ref: './common.yaml#/components/parameters/pricerClientId'
+  post:
+    tags:
+      - Custom Function Preset
+    summary: Create a custom function preset of type scan and flash
+    description: |
+      <p>Creates a custom function preset of type scan and flash.</p>
+      <p><b>Additionally adds the preset at the end of the tenant's preset list.</b></p>
+    operationId: createCustomFunctionPresetTypeScanAndFlash
+    requestBody:
+      $ref: './custom-function-presets-models.yaml#/components/requestBodies/CustomFunctionPresetScanAndFlashRequest'
+    responses:
+      '200':
+        description: Response when creating a custom function preset
+        content:
+          application/json:
+            schema:
+              $ref: './custom-function-presets-models.yaml#/components/schemas/CustomFunctionPresetForTypeScanAndFlash'
+      '400':
+        $ref: './common.yaml#/components/responses/BadRequestResponse'
+      '403':
+        $ref: './common.yaml#/components/responses/AuthorizationErrorResponse'
+      '500':
+        $ref: './common.yaml#/components/responses/InternalErrorResponse'
+
+update-custom-function-presets-of-type-scan-and-flash:
+  parameters:
+    - $ref: './common.yaml#/components/parameters/pricerTransactionId'
+    - $ref: './common.yaml#/components/parameters/pricerClientId'
+  put:
+    tags:
+      - Custom Function Preset
+    summary: Update a custom function preset of type scan and flash
+    description: Updates a custom function preset of type scan and flash
+    operationId: updateCustomFunctionPresetTypeScanAndFlash
+    parameters:
+      - in: path
+        name: id
+        description: The id of the custom function preset
+        required: true
+        schema:
+          type: string
+          format: uuid
+    requestBody:
+      $ref: './custom-function-presets-models.yaml#/components/requestBodies/CustomFunctionPresetScanAndFlashRequest'
+    responses:
+      '200':
+        description: Response when updating a custom function preset
+        content:
+          application/json:
+            schema:
+              $ref: './custom-function-presets-models.yaml#/components/schemas/CustomFunctionPresetForTypeScanAndFlash'
+      '400':
+        $ref: './common.yaml#/components/responses/BadRequestResponse'
+      '403':
+        $ref: './common.yaml#/components/responses/AuthorizationErrorResponse'
+      '500':
+        $ref: './common.yaml#/components/responses/InternalErrorResponse'
+
+custom-function-presets-of-type-bulk-link:
+  parameters:
+    - $ref: './common.yaml#/components/parameters/pricerTransactionId'
+    - $ref: './common.yaml#/components/parameters/pricerClientId'
+  post:
+    tags:
+      - Custom Function Preset
+    summary: Create a custom function preset of type bulk link
+    description: |
+      <p>Creates a custom function preset of type bulk link.</p>
+      <p><b>Additionally adds the preset at the end of the tenant's preset list.</b></p>
+    operationId: createCustomFunctionPresetTypeBulkLink
+    requestBody:
+      $ref: './custom-function-presets-models.yaml#/components/requestBodies/CustomFunctionPresetBulkLinkRequest'
+    responses:
+      '200':
+        description: Response when creating a custom function preset
+        content:
+          application/json:
+            schema:
+              $ref: './custom-function-presets-models.yaml#/components/schemas/CustomFunctionPresetForTypeBulkLink'
+      '400':
+        $ref: './common.yaml#/components/responses/BadRequestResponse'
+      '403':
+        $ref: './common.yaml#/components/responses/AuthorizationErrorResponse'
+      '500':
+        $ref: './common.yaml#/components/responses/InternalErrorResponse'
+
+update-custom-function-presets-of-type-bulk-link:
+  parameters:
+    - $ref: './common.yaml#/components/parameters/pricerTransactionId'
+    - $ref: './common.yaml#/components/parameters/pricerClientId'
+  put:
+    tags:
+      - Custom Function Preset
+    summary: Update a custom function preset of type bulk link
+    description: Updates a custom function preset of type bulk link
+    operationId: updateCustomFunctionPresetTypeBulkLink
+    parameters:
+      - in: path
+        name: id
+        description: The id of the custom function preset
+        required: true
+        schema:
+          type: string
+          format: uuid
+    requestBody:
+      $ref: './custom-function-presets-models.yaml#/components/requestBodies/CustomFunctionPresetBulkLinkRequest'
+    responses:
+      '200':
+        description: Response when updating a custom function preset
+        content:
+          application/json:
+            schema:
+              $ref: './custom-function-presets-models.yaml#/components/schemas/CustomFunctionPresetForTypeBulkLink'
+      '400':
+        $ref: './common.yaml#/components/responses/BadRequestResponse'
+      '403':
+        $ref: './common.yaml#/components/responses/AuthorizationErrorResponse'
+      '500':
+        $ref: './common.yaml#/components/responses/InternalErrorResponse'
+
+custom-function-presets-of-type-bulk-unlink:
+  parameters:
+    - $ref: './common.yaml#/components/parameters/pricerTransactionId'
+    - $ref: './common.yaml#/components/parameters/pricerClientId'
+  post:
+    tags:
+      - Custom Function Preset
+    summary: Create a custom function preset of type bulk unlink
+    description: |
+      <p>Creates a custom function preset of type bulk unlink.</p>
+      <p><b>Additionally adds the preset at the end of the tenant's preset list.</b></p>
+    operationId: createCustomFunctionPresetTypeBulkUnlink
+    requestBody:
+      $ref: './custom-function-presets-models.yaml#/components/requestBodies/CustomFunctionPresetBulkUnlinkRequest'
+    responses:
+      '200':
+        description: Response when creating a custom function preset
+        content:
+          application/json:
+            schema:
+              $ref: './custom-function-presets-models.yaml#/components/schemas/CustomFunctionPresetForTypeBulkUnlink'
+      '400':
+        $ref: './common.yaml#/components/responses/BadRequestResponse'
+      '403':
+        $ref: './common.yaml#/components/responses/AuthorizationErrorResponse'
+      '500':
+        $ref: './common.yaml#/components/responses/InternalErrorResponse'
+
+update-custom-function-presets-of-type-bulk-unlink:
+  parameters:
+    - $ref: './common.yaml#/components/parameters/pricerTransactionId'
+    - $ref: './common.yaml#/components/parameters/pricerClientId'
+  put:
+    tags:
+      - Custom Function Preset
+    summary: Update a custom function preset of type Bulk Unlink
+    description: Updates a custom function preset of type bulk unlink
+    operationId: updateCustomFunctionPresetTypeBulkUnlink
+    parameters:
+      - in: path
+        name: id
+        description: The id of the custom function preset
+        required: true
+        schema:
+          type: string
+          format: uuid
+    requestBody:
+      $ref: './custom-function-presets-models.yaml#/components/requestBodies/CustomFunctionPresetBulkUnlinkRequest'
+    responses:
+      '200':
+        description: Response when updating a custom function preset
+        content:
+          application/json:
+            schema:
+              $ref: './custom-function-presets-models.yaml#/components/schemas/CustomFunctionPresetForTypeBulkUnlink'
+      '400':
+        $ref: './common.yaml#/components/responses/BadRequestResponse'
+      '403':
+        $ref: './common.yaml#/components/responses/AuthorizationErrorResponse'
+      '500':
+        $ref: './common.yaml#/components/responses/InternalErrorResponse'

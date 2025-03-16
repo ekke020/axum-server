@@ -1,0 +1,27 @@
+models:
+  StoreEventRequest:
+    type: object
+    description: object describing a tag to be created
+    properties:
+      subscription:
+        type: string
+      message:
+        type: object
+        properties:
+          data:
+            type: string
+          attributes:
+            type: object
+            additionalProperties:
+              type: string
+          messageId:
+            type: string
+          publishTime:
+            type: string
+requests:
+  StoreEventRequest:
+    description: Request for associating entities to a tag
+    content:
+      application/json:
+        schema:
+          $ref: 'store-models.yaml#/models/StoreEventRequest'

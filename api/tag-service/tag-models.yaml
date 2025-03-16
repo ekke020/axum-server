@@ -1,0 +1,121 @@
+models:
+  CreateTagRequest:
+    type: object
+    description: object describing a tag to be created
+    required:
+      - tag
+    properties:
+      tag:
+        type: string
+        description: The tag name
+        minLength: 1
+        maxLength: 255
+        pattern: '^[a-zA-Z0-9_-]+$'
+        message: 'name must be between 1 and 255 characters'
+        x-pattern-message: 'name must be alpha numeric with dashes or underscores'
+        example: tag-1
+      locked:
+        type: boolean
+        description: Whether the tag is locked
+        example: false
+      entities:
+        type: array
+        description: The entities associated with the tag
+        items:
+          $ref: 'entity-models.yaml#/models/Entity'
+  GetTagResponse:
+    type: object
+    description: object describing a tag that exists
+    properties:
+      tag:
+        type: string
+        description: The tag value
+        example: tag-1
+      id:
+        type: string
+        description: The id of the tag
+        example: 123
+      displayName:
+        type: string
+        description: The display name of the tag which will be either tag or Store Name or External Id of store.
+        example: Tag 1
+      isStoreTag:
+        type: boolean
+        description: Whether the tag is store tag or not
+        example: false
+      locked:
+        type: boolean
+        description: Whether the tag is locked
+        example: false
+      entities:
+        type: array
+        description: The entities associated with the tag
+        items:
+          $ref: 'entity-models.yaml#/models/Entity'
+  #TODO: Add this property once the pcs is updated to allow this
+  #    isAutoProvisioned:
+  #      type: boolean
+  #      description: Whether the tag is auto provisioned
+  #      example: false
+  PatchTagRequest:
+    type: object
+    description: object describing a tag to be updated
+    properties:
+      locked:
+        type: boolean
+        description: Whether the tag is locked
+        example: false
+      entities:
+        type: array
+        description: The entities to associate with the tag
+        items:
+          $ref: 'entity-models.yaml#/models/Entity'
+  PaginatedTagResponse:
+    type: object
+    properties:
+      cursor:
+        type: string
+        description: The cursor to start from
+      tags:
+        type: array
+        items:
+          $ref: 'tag-models.yaml#/models/GetTagResponse'
+      total:
+        type: integer
+        format: int64
+        description: Total number of tags in resultset
+responses:
+  GetTagsResponse:
+    description: List of all tags
+    content:
+      application/json:
+        schema:
+          type: array
+          items:
+            $ref: 'tag-models.yaml#/models/GetTagResponse'
+  GetTagResponse:
+    description: Single tag
+    content:
+      application/json:
+        schema:
+          $ref: 'tag-models.yaml#/models/GetTagResponse'
+  TagResponseListV2:
+    description: List of all tags
+    content:
+      application/json:
+        schema:
+          $ref: 'tag-models.yaml#/models/PaginatedTagResponse'
+
+requests:
+  PatchTagRequest:
+    description: Request for associating entities to a tag
+    content:
+      application/json:
+        schema:
+          $ref: 'tag-models.yaml#/models/PatchTagRequest'
+  CreateTagRequest:
+    description: Creating a tag
+    content:
+      application/json:
+        schema:
+          $ref: 'tag-models.yaml#/models/CreateTagRequest'

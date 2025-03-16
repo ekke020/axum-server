@@ -1,0 +1,60 @@
+custom-function-preset-lists:
+  parameters:
+    - $ref: './common.yaml#/components/parameters/pricerTransactionId'
+    - $ref: './common.yaml#/components/parameters/pricerClientId'
+  get:
+    tags:
+      - Custom Function Preset List
+    summary: Retrieves all custom function preset lists for a tenant
+    description: With current implementation, either 0 or 1 lists will be returned
+    operationId: getCustomFunctionPresetLists
+    responses:
+      '200':
+        description: Custom function preset lists response
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: './custom-function-preset-lists-models.yaml#/components/schemas/CustomFunctionPresetList'
+      '400':
+        $ref: './common.yaml#/components/responses/BadRequestResponse'
+      '403':
+        $ref: './common.yaml#/components/responses/AuthorizationErrorResponse'
+      '500':
+        $ref: './common.yaml#/components/responses/InternalErrorResponse'
+update-order-and-visibility:
+  parameters:
+    - $ref: './common.yaml#/components/parameters/pricerTransactionId'
+    - $ref: './common.yaml#/components/parameters/pricerClientId'
+  patch:
+    tags:
+      - Custom Function Preset List
+    summary: Updates the order and visibility of custom function presets in a list
+    description: Updates the order and visibility of custom function presets in a list
+    operationId: updateOrderAndVisibility
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+      type: string
+      format: uuid
+      default: b4dcea89-f15c-46a5-9177-86e0ba33df84
+    requestBody:
+      $ref: './custom-function-preset-lists-models.yaml#/components/requestBodies/UpdateOrderAndVisibilityRequest'
+    responses:
+      '200':
+        description: Custom function preset lists response
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: './custom-function-preset-lists-models.yaml#/components/schemas/CustomFunctionPresetList'
+      '400':
+        $ref: './common.yaml#/components/responses/BadRequestResponse'
+      '403':
+        $ref: './common.yaml#/components/responses/AuthorizationErrorResponse'
+      '500':
+        $ref: './common.yaml#/components/responses/InternalErrorResponse'

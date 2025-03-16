@@ -1,0 +1,41 @@
+openapi: 3.0.1
+info:
+  title: tag-service-backend API
+  version: '1.0'
+  description: API for tag-service-backend
+  contact:
+    name: Evo core Team
+    email: evocoreteam@pricer.com
+    url: 'https://pricer.com'
+  termsOfService: 'https://pricer.com'
+tags:
+  - name: tag-service-backend
+    description: Tag to name generated classes correctly
+servers:
+  - url: 'http://localhost:8080'
+    description: ''
+paths:
+  '/api/v1/tags':
+    $ref: 'tags-api.yaml#/tags'
+  '/api/v1/tags/{id}':
+    $ref: 'tags-api.yaml#/tags-id'
+  '/api/v1/tags/{tagId}/entities/{entityId}':
+    $ref: 'tags-api.yaml#/entities-id'
+  '/api/v1/entities':
+    $ref: 'entities-api.yaml#/entities'
+  '/api/v1/entities/{id}':
+    $ref: 'entities-api.yaml#/entities-id'
+  '/api/v1/stores/event':
+    $ref: 'stores-api.yaml#/stores-event'
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+security:
+  - basicAuth: [ ]
+  - bearerAuth: [ ]

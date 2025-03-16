@@ -1,0 +1,71 @@
+components:
+  parameters:
+      pricerTransactionId:
+        name: X-Pricer-Transaction-Id
+        in: header
+        description: A transaction id to trace requests across multiple services
+        required: false
+        examples:
+          Transaction id:
+              value: 1b0254bd-fbfb-4d13-bb4e-76459cb5bb88
+        schema:
+          type: string
+      pricerClientId:
+        name: X-Pricer-Client-Id
+        in: header
+        description: A client id to trace requests across multiple services
+        required: false
+        schema:
+          type: string
+  responses:
+    InternalErrorResponse:
+      description: Internal server error
+      content:
+        text/plain:
+          schema:
+            type: string
+            example: Internal server error
+    NotFoundErrorResponse:
+      description: Resource not found
+      content:
+        text/plain:
+          schema:
+            type: string
+            example: Resource not found
+    AuthorizationErrorResponse:
+      description: Authorization failures
+      content:
+        text/plain:
+          schema:
+            type: string
+            example: Invalid or missing authentication token
+    InvalidPayloadResponse:
+      description: Invalid payload or path parameter
+      content:
+        text/plain:
+          schema:
+            type: string
+            example: Invalid parameter or payload
+    ForbiddenErrorResponse:
+      description: Request forbidden
+      content:
+        text/plain:
+          schema:
+            type: string
+            example: You do not have permission to access this resource
+    UnauthorizedErrorResponse:
+      description: Authorization failures
+      content:
+        text/plain:
+          schema:
+            type: string
+            example: Invalid or missing authentication token
+    BadRequestResponse:
+      description: Invalid payload and/or path parameter and/or query string
+      content:
+        text/plain:
+          schema:
+            type: string
+            example: Invalid parameter or payload
+    NoContentResponse:
+      description: Empty response message

@@ -1,0 +1,94 @@
+entities-id:
+  parameters:
+    - in: path
+      name: id
+      description: entity id
+      required: true
+      schema:
+        type: string
+  delete:
+    summary: Delete tagged entity by Id
+    description: Delete an tagged entity by Id
+    tags:
+      - Entities
+    operationId: delete-entity
+    responses:
+      '200':
+        content:
+          text/plain:
+            schema:
+              type: string
+      '400':
+        $ref: 'common.yaml#/responses/InvalidPayloadResponse'
+      '403':
+        $ref: 'common.yaml#/responses/AuthorizationErrorResponse'
+      '500':
+        $ref: 'common.yaml#/responses/InternalErrorResponse'
+  get:
+    summary: Get tagged entity by Id
+    description: Get an tagged entity by Id
+    tags:
+      - Entities
+    operationId: get-entity
+    responses:
+      '200':
+        $ref: 'entity-models.yaml#/responses/GetEntityResponse'
+      '400':
+        $ref: 'common.yaml#/responses/InvalidPayloadResponse'
+      '403':
+        $ref: 'common.yaml#/responses/AuthorizationErrorResponse'
+      '500':
+        $ref: 'common.yaml#/responses/InternalErrorResponse'
+entities:
+  parameters:
+    - in: query
+      name: tags
+      description: Filter on one or more tags names. If specified, the result will be entities that has all the specified tags.
+      required: false
+      schema:
+        type: array
+        items:
+          type: string
+      style: form
+      explode: false
+      examples:
+        oneTag:
+          summary: Example of a single tag
+          value: [ sweden ]
+        multipleTags:
+          summary: Example of multiple tags
+          value: [ sweden, denmark, norway ]
+    - in: query
+      name: entities
+      description: Filter on one or more entity ids. If specified, the result will be details of only specified entities.
+      required: false
+      schema:
+        type: array
+        items:
+          type: string
+      style: form
+      explode: false
+      examples:
+        oneTag:
+          summary: Example of a single tag
+          value: [ store-id-1 ]
+        multipleTags:
+          summary: Example of multiple tags
+          value: [ store-id-1, store-id-2 ]
+    - $ref: 'common.yaml#/parameters/size'
+    - $ref: 'common.yaml#/parameters/page'
+  get:
+    summary: Get all tagged entities for a tenant
+    description: Get all tagged entities for a tenant
+    tags:
+      - Entities
+    operationId: get-entities
+    responses:
+      '200':
+        $ref: 'entity-models.yaml#/responses/GetEntitiesResponse'
+      '400':
+        $ref: 'common.yaml#/responses/InvalidPayloadResponse'
+      '403':
+        $ref: 'common.yaml#/responses/AuthorizationErrorResponse'
+      '500':
+        $ref: 'common.yaml#/responses/InternalErrorResponse'

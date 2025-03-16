@@ -1,0 +1,179 @@
+components:
+  schemas:
+    CustomFunctionPresetBase:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          description: Name of the preset
+    CustomFunctionPresetBaseWithId:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/CustomFunctionPresetBase'
+        - required:
+            - id
+        - properties:
+            id:
+              type: string
+              format: uuid
+    CustomFunctionPresetsResponseItem:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/CustomFunctionPreset'
+        - type: object
+          properties:
+            presetProperties:
+              type: object
+              description: Properties of the preset
+              oneOf:
+                - $ref: '#/components/schemas/ScanAndFlashProperties'
+                - $ref: '#/components/schemas/BulkLinkProperties'
+                - $ref: '#/components/schemas/BulkUnlinkProperties'
+    CustomFunctionPreset:
+      type: object
+      x-implements: ['se.pricer.tenantconfigurator.openapi.CustomFunctionPresetInterface']
+      allOf:
+        - $ref: '#/components/schemas/CustomFunctionPresetBaseWithId'
+        - required:
+            - baseFunctionType
+            - createdAt
+            - createdBy
+            - updatedAt
+            - updatedBy
+            - tenantId
+        - properties:
+            baseFunctionType:
+              $ref: '#/components/schemas/BaseFunctionType'
+            createdAt:
+              type: string
+              format: date-time
+              description: Timestamp when the resource was created
+            createdBy:
+              type: string
+              description: The auth0 user id of the user who created the resource
+            updatedAt:
+              type: string
+              format: date-time
+              description: Timestamp when the resource was latest updated
+            updatedBy:
+              type: string
+              description: The auth0 user id of the user who updated the resource
+            tenantId:
+              type: string
+              description: The tenant ID of the tenant that the resource belongs to
+    CustomFunctionPresetForTypeScanAndFlash:
+      type: object
+      x-implements: ['se.pricer.tenantconfigurator.openapi.CustomFunctionPresetInterface']
+      allOf:
+        - $ref: '#/components/schemas/CustomFunctionPreset'
+        - properties:
+            presetProperties:
+              $ref: '#/components/schemas/ScanAndFlashProperties'
+    CustomFunctionPresetForTypeBulkLink:
+      type: object
+      x-implements: ['se.pricer.tenantconfigurator.openapi.CustomFunctionPresetInterface']
+      allOf:
+        - $ref: '#/components/schemas/CustomFunctionPreset'
+        - properties:
+            presetProperties:
+              $ref: '#/components/schemas/BulkLinkProperties'
+    CustomFunctionPresetForTypeBulkUnlink:
+      type: object
+      x-implements: ['se.pricer.tenantconfigurator.openapi.CustomFunctionPresetInterface']
+      allOf:
+        - $ref: '#/components/schemas/CustomFunctionPreset'
+        - properties:
+            presetProperties:
+              $ref: '#/components/schemas/BulkUnlinkProperties'
+    ScanAndFlashProperties:
+      description: Scan and flash properties
+      type: object
+      required:
+        - flashDurationSeconds
+        - flashColor
+        - flashIntensity
+        - flashType
+      properties:
+        flashDurationSeconds:
+          type: integer
+          minimum: 0
+          format: int32
+          description: Flash duration in seconds
+        flashColor:
+          type: string
+          description: Flash color as hex string
+          example: '#FF0000'
+          pattern: "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$"
+        flashIntensity:
+          type: integer
+          minimum: 0
+          format: int32
+          description: Flash intensity
+        flashType:
+          type: integer
+          minimum: 0
+          format: int32
+          description: Flash type
+    BulkLinkProperties:
+      description: Bulk link properties
+      type: object
+      required:
+        - deviceModel
+        - design
+      properties:
+        deviceModel:
+          type: string
+          description: Device model
+        design:
+          type: string
+          description: Design
+        useDefaultLinkDepartment:
+          type: boolean
+          default: false
+          description: Whether to use the default link department automatically or prompt the user for it
+    BulkUnlinkProperties:
+      description: Bulk unlink properties
+      type: object
+      properties:
+        dummy:
+          type: string
+    BaseFunctionType:
+      type: string
+      enum: [BULK_OPERATION, BULK_LINK, BULK_UNLINK, SCAN_AND_FLASH]
+  requestBodies:
+    CustomFunctionPresetScanAndFlashRequest:
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - presetProperties
+            allOf:
+              - $ref: './custom-function-presets-models.yaml#/components/schemas/CustomFunctionPresetBase'
+              - properties:
+                  presetProperties:
+                    $ref: './custom-function-presets-models.yaml#/components/schemas/ScanAndFlashProperties'
+    CustomFunctionPresetBulkLinkRequest:
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - presetProperties
+            allOf:
+              - $ref: './custom-function-presets-models.yaml#/components/schemas/CustomFunctionPresetBase'
+              - properties:
+                  presetProperties:
+                    $ref: './custom-function-presets-models.yaml#/components/schemas/BulkLinkProperties'
+    CustomFunctionPresetBulkUnlinkRequest:
+      content:
+        application/json:
+          schema:
+            type: object
+            allOf:
+              - $ref: './custom-function-presets-models.yaml#/components/schemas/CustomFunctionPresetBase'
+              - properties:
+                  presetProperties:
+                    $ref: './custom-function-presets-models.yaml#/components/schemas/BulkUnlinkProperties'

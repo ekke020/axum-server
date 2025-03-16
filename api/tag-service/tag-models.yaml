@@ -22,7 +22,7 @@ models:
         type: array
         description: The entities associated with the tag
         items:
-          $ref: 'entity-models.yaml#/models/Entity'
+          $ref: 'tag-models.yaml#/models/Entity'
   GetTagResponse:
     type: object
     description: object describing a tag that exists
@@ -51,12 +51,7 @@ models:
         type: array
         description: The entities associated with the tag
         items:
-          $ref: 'entity-models.yaml#/models/Entity'
-  #TODO: Add this property once the pcs is updated to allow this
-  #    isAutoProvisioned:
-  #      type: boolean
-  #      description: Whether the tag is auto provisioned
-  #      example: false
+          $ref: 'tag-models.yaml#/models/Entity'
   PatchTagRequest:
     type: object
     description: object describing a tag to be updated
@@ -69,7 +64,7 @@ models:
         type: array
         description: The entities to associate with the tag
         items:
-          $ref: 'entity-models.yaml#/models/Entity'
+          $ref: 'tag-models.yaml#/models/Entity'
   PaginatedTagResponse:
     type: object
     properties:
@@ -84,6 +79,24 @@ models:
         type: integer
         format: int64
         description: Total number of tags in resultset
+  Entity:
+    type: object
+    description: An Entity
+    required:
+      - id
+      - type
+    properties:
+      id:
+        type: string
+        description: The id of the entity
+        pattern: '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
+        x-pattern-message: 'Entity Id must be a valid UUID'
+      type:
+        $ref: 'entity-models.yaml#/components/schemas/Type'
+      name:
+        type: string
+        description: If the entity is a store, this is the name of the store
+        example: Store Name
 responses:
   GetTagsResponse:
     description: List of all tags

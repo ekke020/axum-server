@@ -11,9 +11,52 @@ use crate::{models, types::*};
 #[must_use]
 #[allow(clippy::large_enum_variant)]
 pub enum CreateTagResponse {
-    /// Single tag
-    Status201_SingleTag
-    (models::CreateTag201Response)
+
+    Status201
+    (models::Tag)
+    ,
+
+    Status500
+    (models::Error)
+}
+
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[must_use]
+#[allow(clippy::large_enum_variant)]
+pub enum GetTagByIdResponse {
+
+    Status200
+    (models::Tag)
+    ,
+
+    Status500
+    (models::Error)
+}
+
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[must_use]
+#[allow(clippy::large_enum_variant)]
+pub enum GetTagsResponse {
+
+    Status200
+    (Vec<models::Tag>)
+    ,
+
+    Status500
+    (models::Error)
+}
+
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[must_use]
+#[allow(clippy::large_enum_variant)]
+pub enum UpdateTagByIdResponse {
+
+    Status200
+    (models::Tag)
+    ,
+
+    Status500
+    (models::Error)
 }
 
 
@@ -29,6 +72,39 @@ pub trait Tags<E: std::fmt::Debug + Send + Sync + 'static = ()>: super::ErrorHan
     method: &Method,
     host: &Host,
     cookies: &CookieJar,
-            body: &Option<models::CreateTagRequest>,
+            body: &Option<models::Tag>,
     ) -> Result<CreateTagResponse, E>;
+
+    /// Get a tag by id.
+    ///
+    /// GetTagById - GET /api/v1/tags/{id}
+    async fn get_tag_by_id(
+    &self,
+    method: &Method,
+    host: &Host,
+    cookies: &CookieJar,
+      path_params: &models::GetTagByIdPathParams,
+    ) -> Result<GetTagByIdResponse, E>;
+
+    /// Get all tags.
+    ///
+    /// GetTags - GET /api/v1/tags
+    async fn get_tags(
+    &self,
+    method: &Method,
+    host: &Host,
+    cookies: &CookieJar,
+    ) -> Result<GetTagsResponse, E>;
+
+    /// Update a tag by id.
+    ///
+    /// UpdateTagById - PATCH /api/v1/tags/{id}
+    async fn update_tag_by_id(
+    &self,
+    method: &Method,
+    host: &Host,
+    cookies: &CookieJar,
+      path_params: &models::UpdateTagByIdPathParams,
+            body: &Option<models::Tag>,
+    ) -> Result<UpdateTagByIdResponse, E>;
 }

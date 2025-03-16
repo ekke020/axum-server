@@ -1,8 +1,13 @@
-use axum::Router;
+use crate::handlers::ApiImp;
+use crate::routes;
 use listenfd::ListenFd;
+use std::sync::Arc;
 use tokio::net::TcpListener;
 
-pub async fn run(app: Router) {
+pub async fn run() {
+    let swagger = routes::routes();
+    let app = openapi::server::new(Arc::new(ApiImp)).merge(swagger);
+
     let mut listenfd = ListenFd::from_env();
     let listener = match listenfd.take_tcp_listener(0).unwrap() {
         // if we are given a tcp listener on listen fd 0, we use that one

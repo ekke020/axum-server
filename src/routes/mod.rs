@@ -8,6 +8,7 @@ pub fn routes() -> Router {
         .merge(swagger::ui_routes())
         .fallback(handler_404)
 }
+
 async fn handler_404() -> impl IntoResponse {
     (StatusCode::NOT_FOUND, "nothing to see here")
 }

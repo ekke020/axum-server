@@ -8,7 +8,7 @@ cargo install cargo-watch systemfd
 ```
 And to run the server with hot reload, run the following command:
 ```bash
-systemfd --no-pid -s http::3000 -- cargo watch -x run
+systemfd --no-pid -s http::8080 -- cargo watch -x run
 ```
 ## Installing the openAPI generator & generating the code
 

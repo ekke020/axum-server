@@ -1,59 +1,79 @@
-models:
-  CreateTagRequest:
-    type: object
-    description: object describing a tag to be created
-    required:
-      - tag
-    properties:
-      tag:
-        type: string
-        description: The tag name
-        minLength: 1
-        maxLength: 255
-        pattern: '^[a-zA-Z0-9_-]+$'
-        message: 'name must be between 1 and 255 characters'
-        x-pattern-message: 'name must be alpha numeric with dashes or underscores'
-        example: tag-1
-      locked:
-        type: boolean
-        description: Whether the tag is locked
-        example: false
-  GetTagResponse:
-    type: object
-    description: object describing a tag that exists
-    properties:
-      tag:
-        type: string
-        description: The tag value
-        example: tag-1
-      id:
-        type: string
-        description: The id of the tag
-        example: 123
-      displayName:
-        type: string
-        description: The display name of the tag which will be either tag or Store Name or External Id of store.
-        example: Tag 1
-      isStoreTag:
-        type: boolean
-        description: Whether the tag is store tag or not
-        example: false
-      locked:
-        type: boolean
-        description: Whether the tag is locked
-        example: false
+components:
+  schemas:
+    EntityKind:
+      title: EntityKind
+      type: string
+      enum:
+        - STORE
+        - PRODUCT
+        - USER
+        - CATEGORY
+      description: The type of entity.
+    Tag:
+      title: Tag
+      type: object
+      description: object describing a tag
+      required:
+        - tag
+        - displayName
+        - isStoreTag
+        - locked
+      properties:
+        tag:
+          type: string
+          description: The tag value
+          example: tag-1
+        id:
+          type: string
+          description: The id of the tag
+          example: 123
+        displayName:
+          type: string
+          description: The display name of the tag which will be either tag or Store Name or External Id of store.
+          example: Tag 1
+        isStoreTag:
+          type: boolean
+          description: Whether the tag is store tag or not
+          example: false
+        locked:
+          type: boolean
+          description: Whether the tag is locked
+          example: false
+        entities:
+          type: array
+          description: The entities associated with the tag
+          items:
+            $ref: '#/components/schemas/Entity'
+    Entity:
+      title: Entity
+      type: object
+      description: An Entity
+      required:
+        - id
+        - kind
+      properties:
+        id:
+          type: string
+          description: The id of the entity
+          pattern: '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
+          x-pattern-message: 'Entity Id must be a valid UUID'
+        kind:
+          $ref: '#/components/schemas/EntityKind'
+        name:
+          type: string
+          description: If the entity is a store, this is the name of the store
+          example: Store Name
 responses:
   GetTagResponse:
-    description: Single tag
+    description: ""
     content:
       application/json:
         schema:
-          $ref: 'tag-models.yaml#/models/GetTagResponse'
-
+          $ref: '#/components/schemas/Tag'
 requests:
   CreateTagRequest:
     description: Creating a tag
     content:
       application/json:
         schema:
-          $ref: 'tag-models.yaml#/models/CreateTagRequest'
+          $ref: '#/components/schemas/Tag'

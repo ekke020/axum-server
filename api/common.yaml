@@ -1,0 +1,38 @@
+components:
+  schemas:
+    Error:
+      title: Error
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+
+  parameters:
+    Cursor:
+      name: cursor
+      in: query
+      description: The cursor to use for pagination
+      required: false
+      schema:
+        type: string
+    Limit:
+      name: limit
+      in: query
+      description: The limit to use for pagination
+      required: false
+      schema:
+        type: integer
+        format: int32
+        default: 10
+        minimum: 1
+        maximum: 100
+    Id:
+      in: path
+      name: id
+      description: ID in path
+      required: true
+      schema:
+        type: string
+        format: uuid

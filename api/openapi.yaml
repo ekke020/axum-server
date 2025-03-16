@@ -3,8 +3,10 @@ info:
   title: Sample API
   version: 1.0.0
 paths:
-  '/api/v1/tags':
-    $ref: './tags-api.yaml#/tags'
+  "/api/v1/tags":
+    $ref: "./tag-api.yaml#/tags"
+  "/api/v1/tags/{id}":
+    $ref: "./tag-api.yaml#/tags-by-id"
   /hello:
     get:
       summary: Returns a greeting
@@ -12,20 +14,18 @@ paths:
       tags:
         - Greetings
       responses:
-        '200':
-          description: ''
+        "200":
+          description: ""
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Greeting'
-        '500':
-          description: ''
+                $ref: "#/components/schemas/Greeting"
+        "500":
+          description: ""
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-      x-rust-enum-names:
-        200: Success # Rename the 200 variant
+                $ref: "common.yaml#/components/schemas/Error"
   /goodbye:
     get:
       summary: Returns a goodbye message
@@ -33,18 +33,18 @@ paths:
       tags:
         - Farewells
       responses:
-        '200':
-          description: ''
+        "200":
+          description: ""
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Farewell'
-        '500':
-          description: ''
+                $ref: "#/components/schemas/Farewell"
+        "500":
+          description: ""
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "common.yaml#/components/schemas/Error"
 components:
   schemas:
     Greeting:
@@ -59,12 +59,5 @@ components:
       required:
         - message
       properties:
-        message:
-          type: string
-    Error:
-      type: object
-      properties:
-        code:
-          type: integer
         message:
           type: string

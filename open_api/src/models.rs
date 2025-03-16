@@ -10,227 +10,47 @@ use crate::{models, types::*};
       
       
       
+      
+    #[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize, validator::Validate)]
+    #[cfg_attr(feature = "conversion", derive(frunk::LabelledGeneric))] 
+    pub struct GetTagByIdPathParams {
+            /// ID in path
+                pub id: uuid::Uuid,
+    }
 
 
-/// object describing a tag that exists
+      
+      
+    #[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize, validator::Validate)]
+    #[cfg_attr(feature = "conversion", derive(frunk::LabelledGeneric))] 
+    pub struct UpdateTagByIdPathParams {
+            /// ID in path
+                pub id: uuid::Uuid,
+    }
+
+
+
+
+/// An Entity
 #[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize, validator::Validate)]
 #[cfg_attr(feature = "conversion", derive(frunk::LabelledGeneric))]
-pub struct CreateTag201Response {
-    /// The tag value
-    #[serde(rename = "tag")]
-    #[serde(skip_serializing_if="Option::is_none")]
-    pub tag: Option<String>,
-
-    /// The id of the tag
+pub struct Entity {
+    /// The id of the entity
     #[serde(rename = "id")]
-    #[serde(skip_serializing_if="Option::is_none")]
-    pub id: Option<String>,
-
-    /// The display name of the tag which will be either tag or Store Name or External Id of store.
-    #[serde(rename = "displayName")]
-    #[serde(skip_serializing_if="Option::is_none")]
-    pub display_name: Option<String>,
-
-    /// Whether the tag is store tag or not
-    #[serde(rename = "isStoreTag")]
-    #[serde(skip_serializing_if="Option::is_none")]
-    pub is_store_tag: Option<bool>,
-
-    /// Whether the tag is locked
-    #[serde(rename = "locked")]
-    #[serde(skip_serializing_if="Option::is_none")]
-    pub locked: Option<bool>,
-
-}
-
-
-
-
-
-impl CreateTag201Response {
-    #[allow(clippy::new_without_default, clippy::too_many_arguments)]
-    pub fn new() -> CreateTag201Response {
-        CreateTag201Response {
-            tag: None,
-            id: None,
-            display_name: None,
-            is_store_tag: None,
-            locked: None,
-        }
-    }
-}
-
-/// Converts the CreateTag201Response value to the Query Parameters representation (style=form, explode=false)
-/// specified in https://swagger.io/docs/specification/serialization/
-/// Should be implemented in a serde serializer
-impl std::fmt::Display for CreateTag201Response {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let params: Vec<Option<String>> = vec![
-
-            self.tag.as_ref().map(|tag| {
-                [
-                    "tag".to_string(),
-                    tag.to_string(),
-                ].join(",")
-            }),
-
-
-            self.id.as_ref().map(|id| {
-                [
-                    "id".to_string(),
-                    id.to_string(),
-                ].join(",")
-            }),
-
-
-            self.display_name.as_ref().map(|display_name| {
-                [
-                    "displayName".to_string(),
-                    display_name.to_string(),
-                ].join(",")
-            }),
-
-
-            self.is_store_tag.as_ref().map(|is_store_tag| {
-                [
-                    "isStoreTag".to_string(),
-                    is_store_tag.to_string(),
-                ].join(",")
-            }),
-
-
-            self.locked.as_ref().map(|locked| {
-                [
-                    "locked".to_string(),
-                    locked.to_string(),
-                ].join(",")
-            }),
-
-        ];
-
-        write!(f, "{}", params.into_iter().flatten().collect::<Vec<_>>().join(","))
-    }
-}
-
-/// Converts Query Parameters representation (style=form, explode=false) to a CreateTag201Response value
-/// as specified in https://swagger.io/docs/specification/serialization/
-/// Should be implemented in a serde deserializer
-impl std::str::FromStr for CreateTag201Response {
-    type Err = String;
-
-    fn from_str(s: &str) -> std::result::Result<Self, Self::Err> {
-        /// An intermediate representation of the struct to use for parsing.
-        #[derive(Default)]
-        #[allow(dead_code)]
-        struct IntermediateRep {
-            pub tag: Vec<String>,
-            pub id: Vec<String>,
-            pub display_name: Vec<String>,
-            pub is_store_tag: Vec<bool>,
-            pub locked: Vec<bool>,
-        }
-
-        let mut intermediate_rep = IntermediateRep::default();
-
-        // Parse into intermediate representation
-        let mut string_iter = s.split(',');
-        let mut key_result = string_iter.next();
-
-        while key_result.is_some() {
-            let val = match string_iter.next() {
-                Some(x) => x,
-                None => return std::result::Result::Err("Missing value while parsing CreateTag201Response".to_string())
-            };
-
-            if let Some(key) = key_result {
-                #[allow(clippy::match_single_binding)]
-                match key {
-                    #[allow(clippy::redundant_clone)]
-                    "tag" => intermediate_rep.tag.push(<String as std::str::FromStr>::from_str(val).map_err(|x| x.to_string())?),
-                    #[allow(clippy::redundant_clone)]
-                    "id" => intermediate_rep.id.push(<String as std::str::FromStr>::from_str(val).map_err(|x| x.to_string())?),
-                    #[allow(clippy::redundant_clone)]
-                    "displayName" => intermediate_rep.display_name.push(<String as std::str::FromStr>::from_str(val).map_err(|x| x.to_string())?),
-                    #[allow(clippy::redundant_clone)]
-                    "isStoreTag" => intermediate_rep.is_store_tag.push(<bool as std::str::FromStr>::from_str(val).map_err(|x| x.to_string())?),
-                    #[allow(clippy::redundant_clone)]
-                    "locked" => intermediate_rep.locked.push(<bool as std::str::FromStr>::from_str(val).map_err(|x| x.to_string())?),
-                    _ => return std::result::Result::Err("Unexpected key while parsing CreateTag201Response".to_string())
-                }
-            }
-
-            // Get the next key
-            key_result = string_iter.next();
-        }
-
-        // Use the intermediate representation to return the struct
-        std::result::Result::Ok(CreateTag201Response {
-            tag: intermediate_rep.tag.into_iter().next(),
-            id: intermediate_rep.id.into_iter().next(),
-            display_name: intermediate_rep.display_name.into_iter().next(),
-            is_store_tag: intermediate_rep.is_store_tag.into_iter().next(),
-            locked: intermediate_rep.locked.into_iter().next(),
-        })
-    }
-}
-
-// Methods for converting between header::IntoHeaderValue<CreateTag201Response> and HeaderValue
-
-#[cfg(feature = "server")]
-impl std::convert::TryFrom<header::IntoHeaderValue<CreateTag201Response>> for HeaderValue {
-    type Error = String;
-
-    fn try_from(hdr_value: header::IntoHeaderValue<CreateTag201Response>) -> std::result::Result<Self, Self::Error> {
-        let hdr_value = hdr_value.to_string();
-        match HeaderValue::from_str(&hdr_value) {
-             std::result::Result::Ok(value) => std::result::Result::Ok(value),
-             std::result::Result::Err(e) => std::result::Result::Err(
-                 format!("Invalid header value for CreateTag201Response - value: {} is invalid {}",
-                     hdr_value, e))
-        }
-    }
-}
-
-#[cfg(feature = "server")]
-impl std::convert::TryFrom<HeaderValue> for header::IntoHeaderValue<CreateTag201Response> {
-    type Error = String;
-
-    fn try_from(hdr_value: HeaderValue) -> std::result::Result<Self, Self::Error> {
-        match hdr_value.to_str() {
-             std::result::Result::Ok(value) => {
-                    match <CreateTag201Response as std::str::FromStr>::from_str(value) {
-                        std::result::Result::Ok(value) => std::result::Result::Ok(header::IntoHeaderValue(value)),
-                        std::result::Result::Err(err) => std::result::Result::Err(
-                            format!("Unable to convert header value '{}' into CreateTag201Response - {}",
-                                value, err))
-                    }
-             },
-             std::result::Result::Err(e) => std::result::Result::Err(
-                 format!("Unable to convert header: {:?} to string: {}",
-                     hdr_value, e))
-        }
-    }
-}
-
-
-
-
-/// object describing a tag to be created
-#[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize, validator::Validate)]
-#[cfg_attr(feature = "conversion", derive(frunk::LabelledGeneric))]
-pub struct CreateTagRequest {
-    /// The tag name
-    #[serde(rename = "tag")]
     #[validate(
-            length(min = 1, max = 255),
-            regex(path = *RE_CREATETAGREQUEST_TAG),
+            regex(path = *RE_ENTITY_ID),
         )]
-    pub tag: String,
+    pub id: String,
 
-    /// Whether the tag is locked
-    #[serde(rename = "locked")]
+    /// The type of entity.
+    /// Note: inline enums are not fully supported by openapi-generator
+    #[serde(rename = "kind")]
+    pub kind: String,
+
+    /// If the entity is a store, this is the name of the store
+    #[serde(rename = "name")]
     #[serde(skip_serializing_if="Option::is_none")]
-    pub locked: Option<bool>,
+    pub name: Option<String>,
 
 }
 
@@ -238,34 +58,39 @@ pub struct CreateTagRequest {
 
 
 lazy_static::lazy_static! {
-    static ref RE_CREATETAGREQUEST_TAG: regex::Regex = regex::Regex::new(r"^[a-zA-Z0-9_-]+$").unwrap();
+    static ref RE_ENTITY_ID: regex::Regex = regex::Regex::new(r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$").unwrap();
 }
 
-impl CreateTagRequest {
+impl Entity {
     #[allow(clippy::new_without_default, clippy::too_many_arguments)]
-    pub fn new(tag: String, ) -> CreateTagRequest {
-        CreateTagRequest {
-            tag,
-            locked: None,
+    pub fn new(id: String, kind: String, ) -> Entity {
+        Entity {
+            id,
+            kind,
+            name: None,
         }
     }
 }
 
-/// Converts the CreateTagRequest value to the Query Parameters representation (style=form, explode=false)
+/// Converts the Entity value to the Query Parameters representation (style=form, explode=false)
 /// specified in https://swagger.io/docs/specification/serialization/
 /// Should be implemented in a serde serializer
-impl std::fmt::Display for CreateTagRequest {
+impl std::fmt::Display for Entity {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let params: Vec<Option<String>> = vec![
 
-            Some("tag".to_string()),
-            Some(self.tag.to_string()),
+            Some("id".to_string()),
+            Some(self.id.to_string()),
 
 
-            self.locked.as_ref().map(|locked| {
+            Some("kind".to_string()),
+            Some(self.kind.to_string()),
+
+
+            self.name.as_ref().map(|name| {
                 [
-                    "locked".to_string(),
-                    locked.to_string(),
+                    "name".to_string(),
+                    name.to_string(),
                 ].join(",")
             }),
 
@@ -275,10 +100,10 @@ impl std::fmt::Display for CreateTagRequest {
     }
 }
 
-/// Converts Query Parameters representation (style=form, explode=false) to a CreateTagRequest value
+/// Converts Query Parameters representation (style=form, explode=false) to a Entity value
 /// as specified in https://swagger.io/docs/specification/serialization/
 /// Should be implemented in a serde deserializer
-impl std::str::FromStr for CreateTagRequest {
+impl std::str::FromStr for Entity {
     type Err = String;
 
     fn from_str(s: &str) -> std::result::Result<Self, Self::Err> {
@@ -286,8 +111,9 @@ impl std::str::FromStr for CreateTagRequest {
         #[derive(Default)]
         #[allow(dead_code)]
         struct IntermediateRep {
-            pub tag: Vec<String>,
-            pub locked: Vec<bool>,
+            pub id: Vec<String>,
+            pub kind: Vec<String>,
+            pub name: Vec<String>,
         }
 
         let mut intermediate_rep = IntermediateRep::default();
@@ -299,17 +125,19 @@ impl std::str::FromStr for CreateTagRequest {
         while key_result.is_some() {
             let val = match string_iter.next() {
                 Some(x) => x,
-                None => return std::result::Result::Err("Missing value while parsing CreateTagRequest".to_string())
+                None => return std::result::Result::Err("Missing value while parsing Entity".to_string())
             };
 
             if let Some(key) = key_result {
                 #[allow(clippy::match_single_binding)]
                 match key {
                     #[allow(clippy::redundant_clone)]
-                    "tag" => intermediate_rep.tag.push(<String as std::str::FromStr>::from_str(val).map_err(|x| x.to_string())?),
+                    "id" => intermediate_rep.id.push(<String as std::str::FromStr>::from_str(val).map_err(|x| x.to_string())?),
                     #[allow(clippy::redundant_clone)]
-                    "locked" => intermediate_rep.locked.push(<bool as std::str::FromStr>::from_str(val).map_err(|x| x.to_string())?),
-                    _ => return std::result::Result::Err("Unexpected key while parsing CreateTagRequest".to_string())
+                    "kind" => intermediate_rep.kind.push(<String as std::str::FromStr>::from_str(val).map_err(|x| x.to_string())?),
+                    #[allow(clippy::redundant_clone)]
+                    "name" => intermediate_rep.name.push(<String as std::str::FromStr>::from_str(val).map_err(|x| x.to_string())?),
+                    _ => return std::result::Result::Err("Unexpected key while parsing Entity".to_string())
                 }
             }
 
@@ -318,41 +146,42 @@ impl std::str::FromStr for CreateTagRequest {
         }
 
         // Use the intermediate representation to return the struct
-        std::result::Result::Ok(CreateTagRequest {
-            tag: intermediate_rep.tag.into_iter().next().ok_or_else(|| "tag missing in CreateTagRequest".to_string())?,
-            locked: intermediate_rep.locked.into_iter().next(),
+        std::result::Result::Ok(Entity {
+            id: intermediate_rep.id.into_iter().next().ok_or_else(|| "id missing in Entity".to_string())?,
+            kind: intermediate_rep.kind.into_iter().next().ok_or_else(|| "kind missing in Entity".to_string())?,
+            name: intermediate_rep.name.into_iter().next(),
         })
     }
 }
 
-// Methods for converting between header::IntoHeaderValue<CreateTagRequest> and HeaderValue
+// Methods for converting between header::IntoHeaderValue<Entity> and HeaderValue
 
 #[cfg(feature = "server")]
-impl std::convert::TryFrom<header::IntoHeaderValue<CreateTagRequest>> for HeaderValue {
+impl std::convert::TryFrom<header::IntoHeaderValue<Entity>> for HeaderValue {
     type Error = String;
 
-    fn try_from(hdr_value: header::IntoHeaderValue<CreateTagRequest>) -> std::result::Result<Self, Self::Error> {
+    fn try_from(hdr_value: header::IntoHeaderValue<Entity>) -> std::result::Result<Self, Self::Error> {
         let hdr_value = hdr_value.to_string();
         match HeaderValue::from_str(&hdr_value) {
              std::result::Result::Ok(value) => std::result::Result::Ok(value),
              std::result::Result::Err(e) => std::result::Result::Err(
-                 format!("Invalid header value for CreateTagRequest - value: {} is invalid {}",
+                 format!("Invalid header value for Entity - value: {} is invalid {}",
                      hdr_value, e))
         }
     }
 }
 
 #[cfg(feature = "server")]
-impl std::convert::TryFrom<HeaderValue> for header::IntoHeaderValue<CreateTagRequest> {
+impl std::convert::TryFrom<HeaderValue> for header::IntoHeaderValue<Entity> {
     type Error = String;
 
     fn try_from(hdr_value: HeaderValue) -> std::result::Result<Self, Self::Error> {
         match hdr_value.to_str() {
              std::result::Result::Ok(value) => {
-                    match <CreateTagRequest as std::str::FromStr>::from_str(value) {
+                    match <Entity as std::str::FromStr>::from_str(value) {
                         std::result::Result::Ok(value) => std::result::Result::Ok(header::IntoHeaderValue(value)),
                         std::result::Result::Err(err) => std::result::Result::Err(
-                            format!("Unable to convert header value '{}' into CreateTagRequest - {}",
+                            format!("Unable to convert header value '{}' into Entity - {}",
                                 value, err))
                     }
              },
@@ -747,6 +576,200 @@ impl std::convert::TryFrom<HeaderValue> for header::IntoHeaderValue<Greeting> {
                         std::result::Result::Ok(value) => std::result::Result::Ok(header::IntoHeaderValue(value)),
                         std::result::Result::Err(err) => std::result::Result::Err(
                             format!("Unable to convert header value '{}' into Greeting - {}",
+                                value, err))
+                    }
+             },
+             std::result::Result::Err(e) => std::result::Result::Err(
+                 format!("Unable to convert header: {:?} to string: {}",
+                     hdr_value, e))
+        }
+    }
+}
+
+
+
+
+/// object describing a tag
+#[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize, validator::Validate)]
+#[cfg_attr(feature = "conversion", derive(frunk::LabelledGeneric))]
+pub struct Tag {
+    /// The tag value
+    #[serde(rename = "tag")]
+    pub tag: String,
+
+    /// The id of the tag
+    #[serde(rename = "id")]
+    #[serde(skip_serializing_if="Option::is_none")]
+    pub id: Option<String>,
+
+    /// The display name of the tag which will be either tag or Store Name or External Id of store.
+    #[serde(rename = "displayName")]
+    pub display_name: String,
+
+    /// Whether the tag is store tag or not
+    #[serde(rename = "isStoreTag")]
+    pub is_store_tag: bool,
+
+    /// Whether the tag is locked
+    #[serde(rename = "locked")]
+    pub locked: bool,
+
+    /// The entities associated with the tag
+    #[serde(rename = "entities")]
+    #[serde(skip_serializing_if="Option::is_none")]
+    pub entities: Option<Vec<models::Entity>>,
+
+}
+
+
+
+
+
+impl Tag {
+    #[allow(clippy::new_without_default, clippy::too_many_arguments)]
+    pub fn new(tag: String, display_name: String, is_store_tag: bool, locked: bool, ) -> Tag {
+        Tag {
+            tag,
+            id: None,
+            display_name,
+            is_store_tag,
+            locked,
+            entities: None,
+        }
+    }
+}
+
+/// Converts the Tag value to the Query Parameters representation (style=form, explode=false)
+/// specified in https://swagger.io/docs/specification/serialization/
+/// Should be implemented in a serde serializer
+impl std::fmt::Display for Tag {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let params: Vec<Option<String>> = vec![
+
+            Some("tag".to_string()),
+            Some(self.tag.to_string()),
+
+
+            self.id.as_ref().map(|id| {
+                [
+                    "id".to_string(),
+                    id.to_string(),
+                ].join(",")
+            }),
+
+
+            Some("displayName".to_string()),
+            Some(self.display_name.to_string()),
+
+
+            Some("isStoreTag".to_string()),
+            Some(self.is_store_tag.to_string()),
+
+
+            Some("locked".to_string()),
+            Some(self.locked.to_string()),
+
+            // Skipping entities in query parameter serialization
+
+        ];
+
+        write!(f, "{}", params.into_iter().flatten().collect::<Vec<_>>().join(","))
+    }
+}
+
+/// Converts Query Parameters representation (style=form, explode=false) to a Tag value
+/// as specified in https://swagger.io/docs/specification/serialization/
+/// Should be implemented in a serde deserializer
+impl std::str::FromStr for Tag {
+    type Err = String;
+
+    fn from_str(s: &str) -> std::result::Result<Self, Self::Err> {
+        /// An intermediate representation of the struct to use for parsing.
+        #[derive(Default)]
+        #[allow(dead_code)]
+        struct IntermediateRep {
+            pub tag: Vec<String>,
+            pub id: Vec<String>,
+            pub display_name: Vec<String>,
+            pub is_store_tag: Vec<bool>,
+            pub locked: Vec<bool>,
+            pub entities: Vec<Vec<models::Entity>>,
+        }
+
+        let mut intermediate_rep = IntermediateRep::default();
+
+        // Parse into intermediate representation
+        let mut string_iter = s.split(',');
+        let mut key_result = string_iter.next();
+
+        while key_result.is_some() {
+            let val = match string_iter.next() {
+                Some(x) => x,
+                None => return std::result::Result::Err("Missing value while parsing Tag".to_string())
+            };
+
+            if let Some(key) = key_result {
+                #[allow(clippy::match_single_binding)]
+                match key {
+                    #[allow(clippy::redundant_clone)]
+                    "tag" => intermediate_rep.tag.push(<String as std::str::FromStr>::from_str(val).map_err(|x| x.to_string())?),
+                    #[allow(clippy::redundant_clone)]
+                    "id" => intermediate_rep.id.push(<String as std::str::FromStr>::from_str(val).map_err(|x| x.to_string())?),
+                    #[allow(clippy::redundant_clone)]
+                    "displayName" => intermediate_rep.display_name.push(<String as std::str::FromStr>::from_str(val).map_err(|x| x.to_string())?),
+                    #[allow(clippy::redundant_clone)]
+                    "isStoreTag" => intermediate_rep.is_store_tag.push(<bool as std::str::FromStr>::from_str(val).map_err(|x| x.to_string())?),
+                    #[allow(clippy::redundant_clone)]
+                    "locked" => intermediate_rep.locked.push(<bool as std::str::FromStr>::from_str(val).map_err(|x| x.to_string())?),
+                    "entities" => return std::result::Result::Err("Parsing a container in this style is not supported in Tag".to_string()),
+                    _ => return std::result::Result::Err("Unexpected key while parsing Tag".to_string())
+                }
+            }
+
+            // Get the next key
+            key_result = string_iter.next();
+        }
+
+        // Use the intermediate representation to return the struct
+        std::result::Result::Ok(Tag {
+            tag: intermediate_rep.tag.into_iter().next().ok_or_else(|| "tag missing in Tag".to_string())?,
+            id: intermediate_rep.id.into_iter().next(),
+            display_name: intermediate_rep.display_name.into_iter().next().ok_or_else(|| "displayName missing in Tag".to_string())?,
+            is_store_tag: intermediate_rep.is_store_tag.into_iter().next().ok_or_else(|| "isStoreTag missing in Tag".to_string())?,
+            locked: intermediate_rep.locked.into_iter().next().ok_or_else(|| "locked missing in Tag".to_string())?,
+            entities: intermediate_rep.entities.into_iter().next(),
+        })
+    }
+}
+
+// Methods for converting between header::IntoHeaderValue<Tag> and HeaderValue
+
+#[cfg(feature = "server")]
+impl std::convert::TryFrom<header::IntoHeaderValue<Tag>> for HeaderValue {
+    type Error = String;
+
+    fn try_from(hdr_value: header::IntoHeaderValue<Tag>) -> std::result::Result<Self, Self::Error> {
+        let hdr_value = hdr_value.to_string();
+        match HeaderValue::from_str(&hdr_value) {
+             std::result::Result::Ok(value) => std::result::Result::Ok(value),
+             std::result::Result::Err(e) => std::result::Result::Err(
+                 format!("Invalid header value for Tag - value: {} is invalid {}",
+                     hdr_value, e))
+        }
+    }
+}
+
+#[cfg(feature = "server")]
+impl std::convert::TryFrom<HeaderValue> for header::IntoHeaderValue<Tag> {
+    type Error = String;
+
+    fn try_from(hdr_value: HeaderValue) -> std::result::Result<Self, Self::Error> {
+        match hdr_value.to_str() {
+             std::result::Result::Ok(value) => {
+                    match <Tag as std::str::FromStr>::from_str(value) {
+                        std::result::Result::Ok(value) => std::result::Result::Ok(header::IntoHeaderValue(value)),
+                        std::result::Result::Err(err) => std::result::Result::Err(
+                            format!("Unable to convert header value '{}' into Tag - {}",
                                 value, err))
                     }
              },

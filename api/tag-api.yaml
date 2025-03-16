@@ -1,0 +1,89 @@
+tags:
+  get:
+    summary: Get all tags
+    description: Get all tags
+    tags:
+      - Tags
+    operationId: get-tags
+    # parameters: Seems to be a bug in the parser when having more than one parameter value
+    #   - $ref: "#/components/parameters/Cursor"
+    #   - $ref: "#/components/parameters/Limit"
+    responses:
+      "200":
+        description: ""
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "tag-models.yaml#/components/schemas/Tag"
+      "500":
+        description: ""
+        content:
+          application/json:
+            schema:
+              $ref: "common.yaml#/components/schemas/Error"
+  post:
+    summary: Create a tag
+    description: Create a tag
+    tags:
+      - Tags
+    operationId: create-tag
+    requestBody:
+      $ref: "tag-models.yaml#/requests/CreateTagRequest"
+    responses:
+      "201":
+        description: ""
+        content:
+          application/json:
+            schema:
+              $ref: "tag-models.yaml#/components/schemas/Tag"
+      "500":
+        description: ""
+        content:
+          application/json:
+            schema:
+              $ref: "common.yaml#/components/schemas/Error"
+tags-by-id:
+  parameters:
+    - $ref: "common.yaml#/components/parameters/Id"
+  get:
+    summary: Get a tag by id
+    description: Get a tag by id
+    tags:
+      - Tags
+    operationId: get-tag-by-id
+    responses:
+      "200":
+        description: ""
+        content:
+          application/json:
+            schema:
+              $ref: "tag-models.yaml#/components/schemas/Tag"
+      "500":
+        description: ""
+        content:
+          application/json:
+            schema:
+              $ref: "common.yaml#/components/schemas/Error"
+  patch:
+    summary: Update a tag by id
+    description: Update a tag by id
+    tags:
+      - Tags
+    operationId: update-tag-by-id
+    requestBody:
+      $ref: "tag-models.yaml#/requests/CreateTagRequest"
+    responses:
+      "200":
+        description: ""
+        content:
+          application/json:
+            schema:
+              $ref: "tag-models.yaml#/components/schemas/Tag"
+      "500":
+        description: ""
+        content:
+          application/json:
+            schema:
+              $ref: "common.yaml#/components/schemas/Error"

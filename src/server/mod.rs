@@ -1,12 +1,20 @@
+mod swagger;
+
 use crate::handlers::ApiImp;
-use crate::routes;
 use listenfd::ListenFd;
 use std::sync::Arc;
 use tokio::net::TcpListener;
+use axum::response::IntoResponse;
+use http::StatusCode;
+
+async fn handler_404() -> impl IntoResponse {
+    (StatusCode::NOT_FOUND, "nothing to see here")
+}
 
 pub async fn run() {
-    let swagger = routes::routes();
-    let app = openapi::server::new(Arc::new(ApiImp)).merge(swagger);
+    let app = openapi::server::new(Arc::new(ApiImp))
+        .merge(swagger::ui_routes())
+        .fallback(handler_404);
 
     let mut listenfd = ListenFd::from_env();
     let listener = match listenfd.take_tcp_listener(0).unwrap() {

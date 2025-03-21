@@ -1,5 +1,4 @@
-use super::Router;
-use axum::routing::get;
+use axum::{routing::get, Router};
 use swagger_ui_dist::{ApiDefinition, OpenApiSource};
 
 const API_SPEC: &str = include_str!("../../api/openapi.yaml");

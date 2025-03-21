@@ -23,3 +23,10 @@ axum-extra = { version = "0.10", features = ["cookie"] }
 http = "1"
 tower-http = { version = "0.6", features = ["fs"] }
 swagger-ui-dist = "5"
+serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1", features = ["raw_value"] }
+chrono = "0.4.40"
+# google-cloud-auth = "0.18.0"
+# google-cloud-spanner-admin-database-v1 = "0.1.0"
+# google-cloud-spanner = "0.33.0"
+google-cloud-spanner = { package="gcloud-spanner", version="1.0.0" }

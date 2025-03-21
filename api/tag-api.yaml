@@ -5,9 +5,9 @@ tags:
     tags:
       - Tags
     operationId: get-tags
-    # parameters: Seems to be a bug in the parser when having more than one parameter value
-    #   - $ref: "#/components/parameters/Cursor"
-    #   - $ref: "#/components/parameters/Limit"
+    parameters: 
+      - $ref: "common.yaml#/components/parameters/Cursor"
+      - $ref: "common.yaml#/components/parameters/Limit"
     responses:
       "200":
         description: ""
@@ -38,6 +38,12 @@ tags:
           application/json:
             schema:
               $ref: "tag-models.yaml#/components/schemas/Tag"
+      "409":
+        description: ""
+        content:
+          application/json:
+            schema:
+              $ref: "common.yaml#/components/schemas/Error"
       "500":
         description: ""
         content:
@@ -81,6 +87,25 @@ tags-by-id:
           application/json:
             schema:
               $ref: "tag-models.yaml#/components/schemas/Tag"
+      "500":
+        description: ""
+        content:
+          application/json:
+            schema:
+              $ref: "common.yaml#/components/schemas/Error"
+  delete:
+    summary: Delete a tag by id
+    description: Delete a tag by id
+    tags:
+      - Tags
+    operationId: delete-tag-by-id
+    responses:
+      "204":
+        description: ""
+        content:
+          application/json:
+            schema:
+              $ref: "common.yaml#/components/schemas/Message"
       "500":
         description: ""
         content:

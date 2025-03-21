@@ -16,6 +16,23 @@ pub enum CreateTagResponse {
     (models::Tag)
     ,
 
+    Status409
+    (models::Error)
+    ,
+
+    Status500
+    (models::Error)
+}
+
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[must_use]
+#[allow(clippy::large_enum_variant)]
+pub enum DeleteTagByIdResponse {
+
+    Status204
+    (models::Message)
+    ,
+
     Status500
     (models::Error)
 }
@@ -75,6 +92,17 @@ pub trait Tags<E: std::fmt::Debug + Send + Sync + 'static = ()>: super::ErrorHan
             body: &Option<models::Tag>,
     ) -> Result<CreateTagResponse, E>;
 
+    /// Delete a tag by id.
+    ///
+    /// DeleteTagById - DELETE /api/v1/tags/{id}
+    async fn delete_tag_by_id(
+    &self,
+    method: &Method,
+    host: &Host,
+    cookies: &CookieJar,
+      path_params: &models::DeleteTagByIdPathParams,
+    ) -> Result<DeleteTagByIdResponse, E>;
+
     /// Get a tag by id.
     ///
     /// GetTagById - GET /api/v1/tags/{id}
@@ -94,6 +122,7 @@ pub trait Tags<E: std::fmt::Debug + Send + Sync + 'static = ()>: super::ErrorHan
     method: &Method,
     host: &Host,
     cookies: &CookieJar,
+      query_params: &models::GetTagsQueryParams,
     ) -> Result<GetTagsResponse, E>;
 
     /// Update a tag by id.

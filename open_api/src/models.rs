@@ -13,6 +13,15 @@ use crate::{models, types::*};
       
     #[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize, validator::Validate)]
     #[cfg_attr(feature = "conversion", derive(frunk::LabelledGeneric))] 
+    pub struct DeleteTagByIdPathParams {
+            /// ID in path
+                pub id: uuid::Uuid,
+    }
+
+
+      
+    #[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize, validator::Validate)]
+    #[cfg_attr(feature = "conversion", derive(frunk::LabelledGeneric))] 
     pub struct GetTagByIdPathParams {
             /// ID in path
                 pub id: uuid::Uuid,
@@ -20,6 +29,22 @@ use crate::{models, types::*};
 
 
       
+    #[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize, validator::Validate)]
+    #[cfg_attr(feature = "conversion", derive(frunk::LabelledGeneric))] 
+    pub struct GetTagsQueryParams {
+            /// The cursor to use for pagination
+                #[serde(rename = "cursor")]
+                #[serde(skip_serializing_if="Option::is_none")]
+                pub cursor: Option<String>,
+            /// The limit to use for pagination
+                #[serde(rename = "limit")]
+                #[validate(
+                        range(min = 1i32, max = 100i32),
+                    )]
+                #[serde(skip_serializing_if="Option::is_none")]
+                pub limit: Option<i32>,
+    }
+
       
     #[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize, validator::Validate)]
     #[cfg_attr(feature = "conversion", derive(frunk::LabelledGeneric))] 
@@ -199,12 +224,10 @@ impl std::convert::TryFrom<HeaderValue> for header::IntoHeaderValue<Entity> {
 #[cfg_attr(feature = "conversion", derive(frunk::LabelledGeneric))]
 pub struct Error {
     #[serde(rename = "code")]
-    #[serde(skip_serializing_if="Option::is_none")]
-    pub code: Option<i32>,
+    pub code: i32,
 
     #[serde(rename = "message")]
-    #[serde(skip_serializing_if="Option::is_none")]
-    pub message: Option<String>,
+    pub message: String,
 
 }
 
@@ -214,10 +237,10 @@ pub struct Error {
 
 impl Error {
     #[allow(clippy::new_without_default, clippy::too_many_arguments)]
-    pub fn new() -> Error {
+    pub fn new(code: i32, message: String, ) -> Error {
         Error {
-            code: None,
-            message: None,
+            code,
+            message,
         }
     }
 }
@@ -229,20 +252,12 @@ impl std::fmt::Display for Error {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let params: Vec<Option<String>> = vec![
 
-            self.code.as_ref().map(|code| {
-                [
-                    "code".to_string(),
-                    code.to_string(),
-                ].join(",")
-            }),
+            Some("code".to_string()),
+            Some(self.code.to_string()),
 
 
-            self.message.as_ref().map(|message| {
-                [
-                    "message".to_string(),
-                    message.to_string(),
-                ].join(",")
-            }),
+            Some("message".to_string()),
+            Some(self.message.to_string()),
 
         ];
 
@@ -294,8 +309,8 @@ impl std::str::FromStr for Error {
 
         // Use the intermediate representation to return the struct
         std::result::Result::Ok(Error {
-            code: intermediate_rep.code.into_iter().next(),
-            message: intermediate_rep.message.into_iter().next(),
+            code: intermediate_rep.code.into_iter().next().ok_or_else(|| "code missing in Error".to_string())?,
+            message: intermediate_rep.message.into_iter().next().ok_or_else(|| "message missing in Error".to_string())?,
         })
     }
 }
@@ -576,6 +591,142 @@ impl std::convert::TryFrom<HeaderValue> for header::IntoHeaderValue<Greeting> {
                         std::result::Result::Ok(value) => std::result::Result::Ok(header::IntoHeaderValue(value)),
                         std::result::Result::Err(err) => std::result::Result::Err(
                             format!("Unable to convert header value '{}' into Greeting - {}",
+                                value, err))
+                    }
+             },
+             std::result::Result::Err(e) => std::result::Result::Err(
+                 format!("Unable to convert header: {:?} to string: {}",
+                     hdr_value, e))
+        }
+    }
+}
+
+
+
+
+#[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize, validator::Validate)]
+#[cfg_attr(feature = "conversion", derive(frunk::LabelledGeneric))]
+pub struct Message {
+    #[serde(rename = "message")]
+    pub message: String,
+
+    #[serde(rename = "code")]
+    pub code: i32,
+
+}
+
+
+
+
+
+impl Message {
+    #[allow(clippy::new_without_default, clippy::too_many_arguments)]
+    pub fn new(message: String, code: i32, ) -> Message {
+        Message {
+            message,
+            code,
+        }
+    }
+}
+
+/// Converts the Message value to the Query Parameters representation (style=form, explode=false)
+/// specified in https://swagger.io/docs/specification/serialization/
+/// Should be implemented in a serde serializer
+impl std::fmt::Display for Message {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let params: Vec<Option<String>> = vec![
+
+            Some("message".to_string()),
+            Some(self.message.to_string()),
+
+
+            Some("code".to_string()),
+            Some(self.code.to_string()),
+
+        ];
+
+        write!(f, "{}", params.into_iter().flatten().collect::<Vec<_>>().join(","))
+    }
+}
+
+/// Converts Query Parameters representation (style=form, explode=false) to a Message value
+/// as specified in https://swagger.io/docs/specification/serialization/
+/// Should be implemented in a serde deserializer
+impl std::str::FromStr for Message {
+    type Err = String;
+
+    fn from_str(s: &str) -> std::result::Result<Self, Self::Err> {
+        /// An intermediate representation of the struct to use for parsing.
+        #[derive(Default)]
+        #[allow(dead_code)]
+        struct IntermediateRep {
+            pub message: Vec<String>,
+            pub code: Vec<i32>,
+        }
+
+        let mut intermediate_rep = IntermediateRep::default();
+
+        // Parse into intermediate representation
+        let mut string_iter = s.split(',');
+        let mut key_result = string_iter.next();
+
+        while key_result.is_some() {
+            let val = match string_iter.next() {
+                Some(x) => x,
+                None => return std::result::Result::Err("Missing value while parsing Message".to_string())
+            };
+
+            if let Some(key) = key_result {
+                #[allow(clippy::match_single_binding)]
+                match key {
+                    #[allow(clippy::redundant_clone)]
+                    "message" => intermediate_rep.message.push(<String as std::str::FromStr>::from_str(val).map_err(|x| x.to_string())?),
+                    #[allow(clippy::redundant_clone)]
+                    "code" => intermediate_rep.code.push(<i32 as std::str::FromStr>::from_str(val).map_err(|x| x.to_string())?),
+                    _ => return std::result::Result::Err("Unexpected key while parsing Message".to_string())
+                }
+            }
+
+            // Get the next key
+            key_result = string_iter.next();
+        }
+
+        // Use the intermediate representation to return the struct
+        std::result::Result::Ok(Message {
+            message: intermediate_rep.message.into_iter().next().ok_or_else(|| "message missing in Message".to_string())?,
+            code: intermediate_rep.code.into_iter().next().ok_or_else(|| "code missing in Message".to_string())?,
+        })
+    }
+}
+
+// Methods for converting between header::IntoHeaderValue<Message> and HeaderValue
+
+#[cfg(feature = "server")]
+impl std::convert::TryFrom<header::IntoHeaderValue<Message>> for HeaderValue {
+    type Error = String;
+
+    fn try_from(hdr_value: header::IntoHeaderValue<Message>) -> std::result::Result<Self, Self::Error> {
+        let hdr_value = hdr_value.to_string();
+        match HeaderValue::from_str(&hdr_value) {
+             std::result::Result::Ok(value) => std::result::Result::Ok(value),
+             std::result::Result::Err(e) => std::result::Result::Err(
+                 format!("Invalid header value for Message - value: {} is invalid {}",
+                     hdr_value, e))
+        }
+    }
+}
+
+#[cfg(feature = "server")]
+impl std::convert::TryFrom<HeaderValue> for header::IntoHeaderValue<Message> {
+    type Error = String;
+
+    fn try_from(hdr_value: HeaderValue) -> std::result::Result<Self, Self::Error> {
+        match hdr_value.to_str() {
+             std::result::Result::Ok(value) => {
+                    match <Message as std::str::FromStr>::from_str(value) {
+                        std::result::Result::Ok(value) => std::result::Result::Ok(header::IntoHeaderValue(value)),
+                        std::result::Result::Err(err) => std::result::Result::Err(
+                            format!("Unable to convert header value '{}' into Message - {}",
                                 value, err))
                     }
              },

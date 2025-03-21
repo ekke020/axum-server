@@ -3,12 +3,25 @@ components:
     Error:
       title: Error
       type: object
+      required:
+        - code
+        - message
       properties:
         code:
           type: integer
         message:
           type: string
-
+    Message:
+      title: Message
+      type: object
+      required:
+        - message
+        - code
+      properties:
+        message:
+          type: string
+        code:
+          type: integer
   parameters:
     Cursor:
       name: cursor

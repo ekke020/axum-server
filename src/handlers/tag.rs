@@ -33,7 +33,6 @@ impl Tags<AppError> for ApiImp {
     ) -> Result<GetTagByIdResponse, AppError> {
         Ok(GetTagByIdResponse::Status200(models::Tag::new(
             "tag".to_string(),
-            "display_name".to_string(),
             false,
             false,
         )))
@@ -60,7 +59,6 @@ impl Tags<AppError> for ApiImp {
     ) -> Result<UpdateTagByIdResponse, AppError> {
         Ok(UpdateTagByIdResponse::Status200(models::Tag::new(
             "tag".to_string(),
-            "display_name".to_string(),
             false,
             false,
         )))

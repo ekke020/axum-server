@@ -16,7 +16,6 @@ pub fn create_tag(request_body: &Option<Tag>) -> Result<Tag, AppError> {
 pub fn list_tags() -> Result<Vec<Tag>, AppError> {
     Ok(vec![Tag::new(
         "tag".to_string(),
-        "display_name".to_string(),
         false,
         false,
     )])

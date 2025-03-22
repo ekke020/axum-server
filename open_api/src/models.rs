@@ -753,13 +753,14 @@ pub struct Tag {
     #[serde(skip_serializing_if="Option::is_none")]
     pub id: Option<String>,
 
-    /// The display name of the tag which will be either tag or Store Name or External Id of store.
-    #[serde(rename = "displayName")]
-    pub display_name: String,
-
     /// Whether the tag is store tag or not
     #[serde(rename = "isStoreTag")]
     pub is_store_tag: bool,
+
+    /// The store id associated with the tag
+    #[serde(rename = "storeId")]
+    #[serde(skip_serializing_if="Option::is_none")]
+    pub store_id: Option<String>,
 
     /// Whether the tag is locked
     #[serde(rename = "locked")]
@@ -778,12 +779,12 @@ pub struct Tag {
 
 impl Tag {
     #[allow(clippy::new_without_default, clippy::too_many_arguments)]
-    pub fn new(tag: String, display_name: String, is_store_tag: bool, locked: bool, ) -> Tag {
+    pub fn new(tag: String, is_store_tag: bool, locked: bool, ) -> Tag {
         Tag {
             tag,
             id: None,
-            display_name,
             is_store_tag,
+            store_id: None,
             locked,
             entities: None,
         }
@@ -809,12 +810,16 @@ impl std::fmt::Display for Tag {
             }),
 
 
-            Some("displayName".to_string()),
-            Some(self.display_name.to_string()),
-
-
             Some("isStoreTag".to_string()),
             Some(self.is_store_tag.to_string()),
+
+
+            self.store_id.as_ref().map(|store_id| {
+                [
+                    "storeId".to_string(),
+                    store_id.to_string(),
+                ].join(",")
+            }),
 
 
             Some("locked".to_string()),
@@ -841,8 +846,8 @@ impl std::str::FromStr for Tag {
         struct IntermediateRep {
             pub tag: Vec<String>,
             pub id: Vec<String>,
-            pub display_name: Vec<String>,
             pub is_store_tag: Vec<bool>,
+            pub store_id: Vec<String>,
             pub locked: Vec<bool>,
             pub entities: Vec<Vec<models::Entity>>,
         }
@@ -867,9 +872,9 @@ impl std::str::FromStr for Tag {
                     #[allow(clippy::redundant_clone)]
                     "id" => intermediate_rep.id.push(<String as std::str::FromStr>::from_str(val).map_err(|x| x.to_string())?),
                     #[allow(clippy::redundant_clone)]
-                    "displayName" => intermediate_rep.display_name.push(<String as std::str::FromStr>::from_str(val).map_err(|x| x.to_string())?),
-                    #[allow(clippy::redundant_clone)]
                     "isStoreTag" => intermediate_rep.is_store_tag.push(<bool as std::str::FromStr>::from_str(val).map_err(|x| x.to_string())?),
+                    #[allow(clippy::redundant_clone)]
+                    "storeId" => intermediate_rep.store_id.push(<String as std::str::FromStr>::from_str(val).map_err(|x| x.to_string())?),
                     #[allow(clippy::redundant_clone)]
                     "locked" => intermediate_rep.locked.push(<bool as std::str::FromStr>::from_str(val).map_err(|x| x.to_string())?),
                     "entities" => return std::result::Result::Err("Parsing a container in this style is not supported in Tag".to_string()),
@@ -885,8 +890,8 @@ impl std::str::FromStr for Tag {
         std::result::Result::Ok(Tag {
             tag: intermediate_rep.tag.into_iter().next().ok_or_else(|| "tag missing in Tag".to_string())?,
             id: intermediate_rep.id.into_iter().next(),
-            display_name: intermediate_rep.display_name.into_iter().next().ok_or_else(|| "displayName missing in Tag".to_string())?,
             is_store_tag: intermediate_rep.is_store_tag.into_iter().next().ok_or_else(|| "isStoreTag missing in Tag".to_string())?,
+            store_id: intermediate_rep.store_id.into_iter().next(),
             locked: intermediate_rep.locked.into_iter().next().ok_or_else(|| "locked missing in Tag".to_string())?,
             entities: intermediate_rep.entities.into_iter().next(),
         })

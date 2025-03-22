@@ -15,7 +15,6 @@ components:
       description: object describing a tag
       required:
         - tag
-        - displayName
         - isStoreTag
         - locked
       properties:
@@ -27,14 +26,14 @@ components:
           type: string
           description: The id of the tag
           example: 123
-        displayName:
-          type: string
-          description: The display name of the tag which will be either tag or Store Name or External Id of store.
-          example: Tag 1
         isStoreTag:
           type: boolean
           description: Whether the tag is store tag or not
           example: false
+        storeId:
+          type: string
+          description: The store id associated with the tag
+          example: 123
         locked:
           type: boolean
           description: Whether the tag is locked

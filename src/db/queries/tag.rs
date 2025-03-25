@@ -2,28 +2,33 @@ use super::prelude::*;
 use google_cloud_spanner::{row::Row, statement::ToKind};
 use std::vec;
 
+const MISSING_TAG_SUGGESTION: &str = "Make sure the tag ID is correct. Use the list tags endpoint to find available tag IDs.";
 pub async fn fetch_tag_by_id<T: Into<String> + ToKind>(id: T) -> Result<Tag, AppError> {
     let client = get_client().await?;
     let mut tx = client.single().await?;
     let mut query = Statement::new("SELECT * FROM tags WHERE id = @id");
     query.add_param("id", &id);
-    let mut result = tx.query(query).await.map_err(|e| AppError::Empty)?; // Handle query error
-
-    let row = result.next().await.map_err(|_| AppError::Empty)?; // Handle query error
-    row.ok_or(AppError::Empty).and_then(|row| {
-        let tag = TagRow::from(row).into();
-        Ok(tag)
-    })
+    let mut result = tx.query(query).await?; // Handle query error
+                              
+    let row = result
+        .next()
+        .await?
+        .ok_or(AppErrorBuilder::not_found(&format!(
+            "No tag with ID: {} found.",
+            id.into()
+        )).suggestion(MISSING_TAG_SUGGESTION).build())?;
+    let tag = TagRow::from(row).into();
+    Ok(tag)
 }
 
 pub async fn fetch_tags() -> Result<Vec<Tag>, AppError> {
     let client = get_client().await?;
     let mut tx = client.single().await?;
     let query = Statement::new("SELECT * FROM tags Limit 10");
-    let mut result = tx.query(query).await.map_err(|_| AppError::Empty)?; // Handle query error
+    let mut result = tx.query(query).await?;
 
     let mut tags = vec![];
-    while let Some(row) = result.next().await.map_err(|_| AppError::Empty)? {
+    while let Some(row) = result.next().await? {
         let tag: Tag = TagRow::from(row).into();
         tags.push(tag);
     }

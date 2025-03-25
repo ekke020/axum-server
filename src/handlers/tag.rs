@@ -1,5 +1,5 @@
 use super::prelude::*;
-use crate::services::tag::{self, list_tags};
+use crate::services::tag::{self, list_tags, get_tag_by_id};
 use openapi::apis::tags::{
     CreateTagResponse, DeleteTagByIdResponse, GetTagByIdResponse, GetTagsResponse, Tags,
     UpdateTagByIdResponse,
@@ -14,8 +14,9 @@ impl Tags<AppError> for ApiImp {
         _cookies: &CookieJar,
         body: &Option<models::Tag>,
     ) -> Result<CreateTagResponse, AppError> {
-        let created_tag = tag::create_tag(&Option::None)?;
-
+        // let created_tag = tag::create_tag(&Option::None)?;
+        let tag = body.as_ref().unwrap();
+        tag::create_tag(&tag)?;
         Ok(CreateTagResponse::Status409(models::Error::new(
             409,
             "Conflict occurred".to_string(),
@@ -26,16 +27,19 @@ impl Tags<AppError> for ApiImp {
 
     async fn get_tag_by_id(
         &self,
-        _method: &Method,
+        method: &Method,
         _host: &Host,
         _cookies: &CookieJar,
         _path_params: &models::GetTagByIdPathParams,
     ) -> Result<GetTagByIdResponse, AppError> {
-        Ok(GetTagByIdResponse::Status200(models::Tag::new(
-            "tag".to_string(),
-            false,
-            false,
-        )))
+        match get_tag_by_id(&_path_params.id).await {
+            Ok(tag) => return Ok(GetTagByIdResponse::Status200(tag)),
+            Err(mut e) => {
+                e.set_path("/api/v1/tags");
+                e.set_method(method.as_str());
+                return Err(e);
+            },
+        }
     }
 
     async fn get_tags(

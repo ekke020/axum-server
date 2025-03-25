@@ -2,10 +2,7 @@ pub mod tag;
 
 mod prelude {
     pub use super::get_client;
-    pub use crate::errors::AppError;
-    pub use async_trait::async_trait;
-    pub use google_cloud_spanner::client::Client;
-    pub use google_cloud_spanner::client::ClientConfig;
+    pub use crate::errors::{AppErrorBuilder, AppError};
     pub use google_cloud_spanner::statement::Statement;
     pub use openapi::models::Tag;
 }

@@ -45,7 +45,7 @@ impl Tags<AppError> for ApiImp {
         _cookies: &CookieJar,
         _query_params: &models::GetTagsQueryParams,
     ) -> Result<GetTagsResponse, AppError> {
-        let tags = list_tags()?;
+        let tags = list_tags().await?;
         Ok(GetTagsResponse::Status200(tags))
     }
 

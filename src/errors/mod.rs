@@ -1,3 +1,5 @@
+use std::os::macos::raw::stat;
+
 use crate::handlers::ApiImp;
 use axum::{
     http::StatusCode,
@@ -7,6 +9,7 @@ use chrono::Local;
 use openapi::apis::ErrorHandler;
 use serde::Serialize;
 use serde_json::json;
+use google_cloud_spanner::client::google_cloud_auth;
 
 #[async_trait::async_trait]
 impl ErrorHandler<AppError> for ApiImp {
@@ -21,15 +24,7 @@ impl ErrorHandler<AppError> for ApiImp {
         println!("Error handler: {:?}", method);
         println!("Error handler: {:?}", host);
         println!("Error handler: {:?}", cookies);
-        Ok(Error::new("").into_response())
-        // let json_bytes = serde_json::to_vec(&Error::new()).map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?; // handle serde errors.
-        // let body = axum::body::Body::from(json_bytes);
-        // axum::response::Response::builder()
-        //     // .header("content/type", "application/json")
-        //     .status(status)
-        //     .body(body)
-        //     .map_err(|_| http::StatusCode::INTERNAL_SERVER_ERROR)
-        // // Ok(response)
+        Ok(Error::new("", 400).into_response())
     }
 }
 
@@ -42,14 +37,42 @@ pub enum AppError {
     InternalServerError(Error),
 }
 
+impl Default for AppError {
+    fn default() -> Self {
+        AppError::Empty
+    }
+}
+// TODO: Implement the From trait for the following types
+impl From<google_cloud_spanner::client::Error> for AppError {
+    fn from(e: google_cloud_spanner::client::Error) -> Self {
+        let error = match e {
+            google_cloud_spanner::client::Error::GRPC(status) => {
+                Error::new(status.message(), 500)
+            },
+            google_cloud_spanner::client::Error::InvalidSession(session_error) => todo!(),
+            google_cloud_spanner::client::Error::ParseError(error) => todo!(),
+            google_cloud_spanner::client::Error::Connection(error) => todo!(),
+            google_cloud_spanner::client::Error::InvalidConfig(_) => todo!(),
+        };
+
+        AppError::DatabaseError(error)
+    }
+}
+
+impl From<google_cloud_auth::error::Error> for AppError {
+    fn from(_: google_cloud_spanner::client::google_cloud_auth::error::Error) -> Self {
+        AppError::default()
+    }
+}
+
 #[derive(Serialize, Debug, Clone)]
 pub struct Error {
     message: String,
-    status: u16,
+    pub status: u16,
     time: String,
-    path: Option<String>,
-    details: ErrorDetails,
-    suggestion: Option<String>,
+    pub path: Option<String>,
+    pub details: ErrorDetails,
+    pub suggestion: Option<String>,
 }
 
 impl IntoResponse for Error {
@@ -58,11 +81,12 @@ impl IntoResponse for Error {
         (status, axum::Json(json!(self))).into_response()
     }
 }
+
 impl Error {
-    fn new(message: &str) -> Self {
+    fn new(message: &str, status: u16) -> Self {
         Self {
             message: message.to_string(),
-            status: 400,
+            status,
             time: Local::now().to_string(),
             path: None,
             details: ErrorDetails {
@@ -78,9 +102,10 @@ impl Error {
         serde_json::to_string(&self).unwrap()
     }
 }
+
 #[derive(Serialize, Debug, Clone)]
-struct ErrorDetails {
-    field: String,
-    value: String,
-    reason: String,
+pub struct ErrorDetails {
+    pub field: String,
+    pub value: String,
+    pub reason: String,
 }

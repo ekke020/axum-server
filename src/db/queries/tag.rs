@@ -1,38 +1,32 @@
+use super::prelude::*;
+use google_cloud_spanner::{row::Row, statement::ToKind};
 use std::vec;
 
-use google_cloud_spanner::{
-    row::Row,
-    statement::{Statement, ToKind},
-};
-use openapi::models::Tag;
-
-use super::super::{get_client, Error};
-
-pub async fn fetch_tag_by_id<T: Into<String> + ToKind>(id: T) -> Result<Tag, Error> {
+pub async fn fetch_tag_by_id<T: Into<String> + ToKind>(id: T) -> Result<Tag, AppError> {
     let client = get_client().await?;
     let mut tx = client.single().await?;
     let mut query = Statement::new("SELECT * FROM tags WHERE id = @id");
     query.add_param("id", &id);
-    let mut result = tx.query(query).await.map_err(|_| Error::NotFound)?; // Handle query error
+    let mut result = tx.query(query).await.map_err(|e| AppError::Empty)?; // Handle query error
 
-    let row = result.next().await.map_err(|_| Error::DatabaseError)?; // Handle query error
-    row.ok_or(Error::NotFound).and_then(|row| {
+    let row = result.next().await.map_err(|_| AppError::Empty)?; // Handle query error
+    row.ok_or(AppError::Empty).and_then(|row| {
         let tag = TagRow::from(row).into();
         Ok(tag)
     })
 }
 
-pub async fn fetch_tags() -> Result<Vec<Tag>, Error> {
+pub async fn fetch_tags() -> Result<Vec<Tag>, AppError> {
     let client = get_client().await?;
     let mut tx = client.single().await?;
     let query = Statement::new("SELECT * FROM tags Limit 10");
-    let mut result = tx.query(query).await.map_err(|_| Error::NotFound)?; // Handle query error
+    let mut result = tx.query(query).await.map_err(|_| AppError::Empty)?; // Handle query error
 
     let mut tags = vec![];
-    while let Some(row) = result.next().await.map_err(|_| Error::DatabaseError)? {
+    while let Some(row) = result.next().await.map_err(|_| AppError::Empty)? {
         let tag: Tag = TagRow::from(row).into();
         tags.push(tag);
-    };
+    }
     Ok(tags)
 }
 

@@ -7,5 +7,5 @@ mod services;
 
 #[tokio::main]
 async fn main() {
-    db::test().await;
+    server::run().await;
 }
